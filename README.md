@@ -1,78 +1,58 @@
-# React + TypeScript + Vite
+# Zueirinha: Cara ou Coroa
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Um jogo de cara ou coroa para decidir apostas entre duas pessoas. Você coloca quem é Cara e quem é Coroa, diz o que está sendo apostado e joga a moeda. Ela gira na tela e mostra quem venceu.
 
-Currently, two official plugins are available:
+## Funcionalidades
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Jogadores:** o nome de quem é Cara e de quem é Coroa é obrigatório e aparece nas faces da moeda.
+- **Aposta (opcional):** o que está em jogo, por exemplo "quem paga o lanche". O resultado diz quem leva.
+- **Moeda animada:** a moeda sobe, gira em 3D e cai no lado sorteado. O resultado só aparece quando a animação termina.
+- **Multiplicador de partidas:** joga a moeda várias vezes de uma vez, até 100.000. Vence quem tiver mais lados no total, e o resultado mostra quantas vezes caiu cada lado, com a porcentagem e uma barra comparando os dois.
+- **Placar e histórico:** o placar soma os lados que caíram para cada pessoa, e o histórico guarda as 10 últimas jogadas.
 
-## React Compiler
+## Tecnologias
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+- [React 19](https://react.dev) com TypeScript
+- [Vite](https://vite.dev)
+- [Tailwind CSS 4](https://tailwindcss.com)
 
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
+## Como rodar
 
-## Expanding the ESLint configuration
+Você precisa do [Node.js](https://nodejs.org), versão 20.19 ou mais nova.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+```bash
+# 1. Instale as dependências
+npm install
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+# 2. Inicie o servidor de desenvolvimento
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+Depois abra o endereço que aparece no terminal, normalmente http://localhost:5173.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Outros comandos
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| Comando           | O que faz                                    |
+| ----------------- | -------------------------------------------- |
+| `npm run dev`     | Inicia o jogo em modo de desenvolvimento     |
+| `npm run build`   | Gera a versão de produção na pasta `dist/`   |
+| `npm run preview` | Abre a versão de produção para testar        |
+| `npm run lint`    | Verifica o código com o ESLint               |
 
+## Estrutura do projeto
+
+```
+src/
+├── App.tsx               # Guarda o estado do jogo e junta os componentes
+├── main.tsx              # Ponto de entrada do React
+├── index.css             # Estilos globais e animação da moeda
+└── component/
+    ├── jogo.ts           # Regras do jogo: tipos, sorteio, vencedor
+    ├── Moeda.tsx         # Moeda 3D com a animação
+    ├── Resultado.tsx     # Mensagem de resultado
+    ├── Jogadores.tsx     # Campos dos nomes e da aposta
+    ├── Multiplicador.tsx # Campo do multiplicador e atalhos
+    ├── BotaoJogar.tsx    # Botão "Jogar a moeda"
+    ├── Placar.tsx        # Placar por pessoa
+    └── Historico.tsx     # Últimas jogadas
 ```
