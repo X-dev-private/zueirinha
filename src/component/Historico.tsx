@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { vencedor, type Rodada } from './jogo'
+import { useFecharAoClicarFora } from './useFecharAoClicarFora'
 
 type Props = {
   jogadas: Rodada[]
@@ -11,22 +12,7 @@ export function Historico({ jogadas }: Props) {
   const [aberto, setAberto] = useState(false)
   const caixaRef = useRef<HTMLDivElement>(null)
 
-  // Fecha ao clicar fora ou apertar Esc
-  useEffect(() => {
-    if (!aberto) return
-    function aoClicar(e: PointerEvent) {
-      if (!caixaRef.current?.contains(e.target as Node)) setAberto(false)
-    }
-    function aoTeclar(e: KeyboardEvent) {
-      if (e.key === 'Escape') setAberto(false)
-    }
-    document.addEventListener('pointerdown', aoClicar)
-    document.addEventListener('keydown', aoTeclar)
-    return () => {
-      document.removeEventListener('pointerdown', aoClicar)
-      document.removeEventListener('keydown', aoTeclar)
-    }
-  }, [aberto])
+  useFecharAoClicarFora(caixaRef, aberto, () => setAberto(false))
 
   if (jogadas.length === 0) return null
 

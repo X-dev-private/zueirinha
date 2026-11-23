@@ -166,6 +166,20 @@ strong {
   }
 }
 
+/* Suspense: gira no alto, sem parar, até o resultado chegar */
+.moeda-suspense {
+  animation: moeda-suspense 0.7s linear infinite;
+}
+
+@keyframes moeda-suspense {
+  from {
+    transform: translateY(var(--pulo-suspense, -40px)) rotateY(0deg);
+  }
+  to {
+    transform: translateY(var(--pulo-suspense, -40px)) rotateY(360deg);
+  }
+}
+
 @keyframes moeda-girar {
   0% {
     transform: translateY(0) rotateY(var(--de)) scale(1);

@@ -1,4 +1,8 @@
-import { encurtarEndereco, useCarteira } from './carteira'
+import { useRef } from 'react'
+import { encurtarEndereco, type CarteiraHook } from './carteira'
+import type { ContratoHook } from './contrato'
+import { PainelContrato } from './PainelContrato'
+import { useFecharAoClicarFora } from './useFecharAoClicarFora'
 
 // Ícone de carteira (herda a cor do texto)
 function IconeCarteira() {
@@ -17,13 +21,31 @@ function IconeCarteira() {
 }
 
 const pilula =
-  'botao-carteira flex h-10 items-center gap-2 rounded-full px-2.5 text-sm lg:h-11 font-semibold text-[var(--texto-forte)] transition hover:-translate-y-0.5 active:scale-95 lg:px-4'
+  'botao-carteira flex h-10 items-center gap-2 rounded-full px-2.5 text-sm font-semibold text-[var(--texto-forte)] transition hover:-translate-y-0.5 active:scale-95 lg:h-11 lg:px-4'
 
-export function BotaoCarteira() {
-  const { conta, conectando, erro, temCarteira, conectar, desconectar } = useCarteira()
+type Props = {
+  carteira: CarteiraHook
+  contrato: ContratoHook
+  aberto: boolean
+  setAberto: (aberto: boolean | ((a: boolean) => boolean)) => void
+}
+
+export function BotaoCarteira({ carteira, contrato, aberto, setAberto }: Props) {
+  const { conta, conectando, erro, temCarteira, conectar, desconectar } = carteira
+  const caixaRef = useRef<HTMLDivElement>(null)
+
+  useFecharAoClicarFora(caixaRef, aberto, () => setAberto(false))
+
+  async function conectarEAbrir() {
+    // Depois de conectar, já mostra o painel do contrato
+    if (await conectar()) setAberto(true)
+  }
 
   return (
-    <div className="absolute top-2 right-2 z-10 flex flex-col items-end gap-1.5 lg:top-5 lg:right-8">
+    <div
+      ref={caixaRef}
+      className="absolute top-2 right-2 z-30 flex flex-col items-end gap-1.5 lg:top-5 lg:right-8"
+    >
       {!temCarteira && (
         <a
           href="https://metamask.io/download/"
@@ -42,7 +64,7 @@ export function BotaoCarteira() {
       {temCarteira && !conta && (
         <button
           type="button"
-          onClick={conectar}
+          onClick={conectarEAbrir}
           disabled={conectando}
           aria-label="Conectar carteira"
           className={`${pilula} disabled:cursor-wait disabled:opacity-70`}
@@ -54,27 +76,45 @@ export function BotaoCarteira() {
               <IconeCarteira />
             )}
           </span>
-          <span className="hidden lg:inline">{conectando ? 'Conectando...' : 'Conectar carteira'}</span>
+          <span className="hidden lg:inline">
+            {conectando ? 'Conectando...' : 'Conectar carteira'}
+          </span>
         </button>
       )}
 
       {conta && (
-        <div className={`${pilula} hover:translate-y-0 active:scale-100`} title={conta}>
-          <span className="relative text-violet-500 dark:text-violet-300">
-            <IconeCarteira />
-            <span className="absolute -right-1 -bottom-1 h-2.5 w-2.5 rounded-full bg-emerald-400 ring-2 ring-white dark:ring-[#2a2152]" />
-          </span>
-          <span className="hidden font-mono text-xs lg:inline">{encurtarEndereco(conta)}</span>
+        <>
           <button
             type="button"
-            onClick={desconectar}
-            aria-label="Desconectar carteira"
-            title="Desconectar"
-            className="-mr-1 grid h-6 w-6 place-items-center rounded-full text-xs opacity-60 transition hover:bg-pink-100 hover:opacity-100 dark:hover:bg-white/10"
+            onClick={() => setAberto((a) => !a)}
+            aria-expanded={aberto}
+            aria-label="Abrir painel da carteira"
+            title={conta}
+            className={pilula}
           >
-            ✕
+            <span className="relative text-violet-500 dark:text-violet-300">
+              <IconeCarteira />
+              <span className="absolute -right-1 -bottom-1 h-2.5 w-2.5 rounded-full bg-emerald-400 ring-2 ring-white dark:ring-[#2a2152]" />
+            </span>
+            <span className="hidden font-mono text-xs lg:inline">{encurtarEndereco(conta)}</span>
+            <span
+              aria-hidden
+              className={`hidden text-[10px] transition-transform lg:inline ${aberto ? 'rotate-180' : ''}`}
+            >
+              ▼
+            </span>
           </button>
-        </div>
+
+          <PainelContrato
+            conta={conta}
+            contrato={contrato}
+            aberto={aberto}
+            onDesconectar={() => {
+              setAberto(false)
+              desconectar()
+            }}
+          />
+        </>
       )}
 
       {erro && (

@@ -2,6 +2,8 @@ import type { CSSProperties } from 'react'
 
 type Props = {
   girando: boolean
+  // Girando sem parar enquanto espera um resultado (ex.: a rede confirmar a jogada)
+  aguardando?: boolean
   mostrarFace: boolean
   angulo: number
   animacao: { id: number; de: number; ate: number }
@@ -15,6 +17,7 @@ const face =
 
 export function Moeda({
   girando,
+  aguardando = false,
   mostrarFace,
   angulo,
   animacao,
@@ -27,18 +30,18 @@ export function Moeda({
       <div
         key={animacao.id}
         onAnimationEnd={onFimDaAnimacao}
-        className={`moeda h-full w-full ${girando ? 'moeda-girando' : ''}`}
+        className={`moeda h-full w-full ${girando ? 'moeda-girando' : aguardando ? 'moeda-suspense' : ''}`}
         style={
           {
             '--de': `${animacao.de}deg`,
             '--ate': `${animacao.ate}deg`,
-            transform: girando ? undefined : `rotateY(${angulo}deg)`,
+            transform: girando || aguardando ? undefined : `rotateY(${angulo}deg)`,
           } as CSSProperties
         }
       >
         <div className={face}>
-          <span>{mostrarFace ? '🙂' : '?'}</span>
-          {mostrarFace && (
+          <span>{mostrarFace || aguardando ? '🙂' : '?'}</span>
+          {(mostrarFace || aguardando) && (
             <span className="max-w-full truncate text-sm font-bold">{rotuloCara || 'CARA'}</span>
           )}
         </div>

@@ -5,9 +5,20 @@ type Props = {
   pendente: Rodada | null
   rodada: Rodada | null
   nomesPreenchidos: boolean
+  // Texto quando ainda não há jogada (substitui o padrão)
+  mensagemVazia?: string
+  // Esperando a rede confirmar a jogada
+  aguardando?: boolean
 }
 
-export function Resultado({ girando, pendente, rodada, nomesPreenchidos }: Props) {
+export function Resultado({
+  girando,
+  pendente,
+  rodada,
+  nomesPreenchidos,
+  mensagemVazia,
+  aguardando = false,
+}: Props) {
   return (
     <div className="flex min-h-16 w-full sm:min-h-28 max-w-md items-start justify-center">
       {girando && (
@@ -18,15 +29,22 @@ export function Resultado({ girando, pendente, rodada, nomesPreenchidos }: Props
         </p>
       )}
 
-      {!girando && !rodada && (
-        <p className="pt-1 text-sm sm:pt-2 sm:text-base">
-          {nomesPreenchidos
-            ? 'Tudo pronto! Clique em "Jogar a moeda".'
-            : 'Coloque o nome de quem é Cara e de quem é Coroa para começar.'}
+      {aguardando && !girando && (
+        <p className="animate-pulse pt-2 text-lg font-semibold">
+          Jogando a moeda na blockchain... ⛓️
         </p>
       )}
 
-      {!girando && rodada && <CartaoResultado rodada={rodada} />}
+      {!aguardando && !girando && !rodada && (
+        <p className="pt-1 text-sm sm:pt-2 sm:text-base">
+          {mensagemVazia ??
+            (nomesPreenchidos
+              ? 'Tudo pronto! Clique em "Jogar a moeda".'
+              : 'Coloque o nome de quem é Cara e de quem é Coroa para começar.')}
+        </p>
+      )}
+
+      {!aguardando && !girando && rodada && <CartaoResultado rodada={rodada} />}
     </div>
   )
 }
@@ -38,7 +56,9 @@ function CartaoResultado({ rodada }: { rodada: Rodada }) {
   return (
     <div
       className={`cartao surgir flex w-full flex-col gap-2 p-4 ${
-        empate ? 'ring-4 ring-amber-200/70 dark:ring-amber-300/30' : 'ring-4 ring-emerald-200/70 dark:ring-emerald-300/30'
+        empate
+          ? 'ring-4 ring-amber-200/70 dark:ring-amber-300/30'
+          : 'ring-4 ring-emerald-200/70 dark:ring-emerald-300/30'
       }`}
     >
       {/* Título */}

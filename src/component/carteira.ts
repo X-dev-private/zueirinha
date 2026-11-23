@@ -1,6 +1,6 @@
 // Lógica da carteira (MetaMask e outras compatíveis), usando web3.js
 import { useEffect, useState } from 'react'
-import type { types } from 'web3'
+import type { types, Web3 } from 'web3'
 
 type Provedor = types.MetaMaskProvider<types.Web3EthExecutionAPI>
 
@@ -10,17 +10,63 @@ declare global {
   }
 }
 
-// web3.js é pesado: só baixamos quando realmente precisamos
-async function criarWeb3(eth: Provedor) {
-  const { Web3 } = await import('web3')
-  return new Web3(eth)
+// web3.js é pesado: só baixamos quando precisamos, e uma vez só
+let web3Promessa: Promise<Web3> | null = null
+export function obterWeb3(): Promise<Web3> {
+  const eth = window.ethereum
+  if (!eth) return Promise.reject(new Error('Nenhuma carteira encontrada'))
+  web3Promessa ??= import('web3').then(({ Web3 }) => new Web3(eth))
+  return web3Promessa
 }
 
-function mensagemDeErro(e: unknown): string {
+// Chamada "crua" à carteira, para métodos que o web3.js não tipa (trocar de rede etc.)
+export function pedirCarteira(method: string, params?: unknown[]) {
+  const eth = window.ethereum
+  if (!eth) return Promise.reject(new Error('Nenhuma carteira encontrada'))
+  const request = eth.request as (args: { method: string; params?: unknown[] }) => Promise<unknown>
+  return request.call(eth, { method, params })
+}
+
+// Transforma o erro (que o web3.js costuma embrulhar) em texto pesquisável
+function textoDoErro(e: unknown): string {
+  try {
+    return JSON.stringify(e, (_k, v) => (typeof v === 'bigint' ? v.toString() : v)) + String(e)
+  } catch {
+    return String(e)
+  }
+}
+
+const ERROS_DO_CONTRATO: [string, string][] = [
+  ['0xf4d678b8', 'Saldo insuficiente no contrato. Deposite mais pela carteira.'], // InsufficientBalance
+  ['0x1f2a2005', 'O valor precisa ser maior que zero'], // ZeroAmount
+  ['0x0a6fc7ca', 'Essa aposta não está mais aberta'], // BetNotOpen
+  ['0xa0f7462e', 'Essa aposta não está esperando a moeda'], // BetNotJoined
+  ['0xa6e9b6d7', 'Só quem criou a aposta pode cancelar'], // NotBetCreator
+  ['0x8c78585b', 'Você não pode entrar na sua própria aposta'], // CannotJoinOwnBet
+  ['0x085de625', 'Ainda cedo: espere o próximo bloco para jogar a moeda'], // TooEarly
+  ['0x9b0beeda', 'Só quem venceu pode devolver'], // NotBetWinner
+  ['0xb5820ebf', 'A aposta ainda não foi resolvida'], // BetNotResolved
+  ['0xd0bfcb60', 'Não dá para devolver mais do que o perdedor apostou'], // ReturnTooHigh
+  ['0x90b8ec18', 'A transferência falhou'], // TransferFailed
+]
+
+export function mensagemDeErro(e: unknown): string {
   const codigo = (e as { code?: number })?.code
-  if (codigo === 4001) return 'Conexão cancelada na carteira'
-  if (codigo === -32002) return 'Já tem um pedido aberto na carteira, dá uma olhada lá'
-  return 'Não deu para conectar a carteira'
+  const t = textoDoErro(e).toLowerCase()
+  if (
+    codigo === 4001 ||
+    t.includes('"code":4001') ||
+    t.includes('user denied') ||
+    t.includes('user rejected')
+  )
+    return 'Cancelado na carteira'
+  if (codigo === -32002 || t.includes('-32002'))
+    return 'Já tem um pedido aberto na carteira, dá uma olhada lá'
+  if (t.includes('insufficient funds'))
+    return 'Saldo insuficiente para o valor + taxa da rede (gás)'
+  // Erros do próprio contrato (seletor = primeiros 4 bytes do keccak256 do nome)
+  for (const [seletor, msg] of ERROS_DO_CONTRATO) if (t.includes(seletor)) return msg
+  return 'Algo deu errado. Tente de novo.'
 }
 
 // 0x1234abcd...ef56 -> 0x1234…ef56
@@ -41,7 +87,7 @@ export function useCarteira() {
 
     const aoTrocarConta = (contas: string[]) => setConta(contas[0] ?? null)
 
-    criarWeb3(eth)
+    obterWeb3()
       .then((web3) => web3.eth.getAccounts())
       .then((contas) => setConta(contas[0] ?? null))
       .catch(() => {})
@@ -57,17 +103,19 @@ export function useCarteira() {
     return () => clearTimeout(t)
   }, [erro])
 
-  async function conectar() {
-    const eth = window.ethereum
-    if (!eth || conectando) return
+  // Devolve true se conectou
+  async function conectar(): Promise<boolean> {
+    if (!window.ethereum || conectando) return false
     setConectando(true)
     setErro(null)
     try {
-      const web3 = await criarWeb3(eth)
+      const web3 = await obterWeb3()
       const contas = await web3.eth.requestAccounts()
       setConta(contas[0] ?? null)
+      return contas.length > 0
     } catch (e) {
       setErro(mensagemDeErro(e))
+      return false
     } finally {
       setConectando(false)
     }
@@ -76,14 +124,8 @@ export function useCarteira() {
   async function desconectar() {
     setConta(null)
     // Pede para a carteira esquecer a permissão (nem todas suportam; tudo bem se falhar)
-    const request = window.ethereum?.request as
-      | ((args: { method: string; params?: unknown[] }) => Promise<unknown>)
-      | undefined
     try {
-      await request?.call(window.ethereum, {
-        method: 'wallet_revokePermissions',
-        params: [{ eth_accounts: {} }],
-      })
+      await pedirCarteira('wallet_revokePermissions', [{ eth_accounts: {} }])
     } catch {
       // ignorado
     }
@@ -91,3 +133,5 @@ export function useCarteira() {
 
   return { conta, conectando, erro, temCarteira, conectar, desconectar }
 }
+
+export type CarteiraHook = ReturnType<typeof useCarteira>
