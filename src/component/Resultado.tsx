@@ -9,9 +9,9 @@ type Props = {
 
 export function Resultado({ girando, pendente, rodada, nomesPreenchidos }: Props) {
   return (
-    <div className="flex min-h-40 w-full max-w-md items-center justify-center">
+    <div className="flex min-h-16 w-full sm:min-h-28 max-w-md items-start justify-center">
       {girando && (
-        <p className="text-xl font-semibold">
+        <p className="animate-pulse pt-2 text-lg font-semibold">
           {pendente && pendente.quantidade > 1
             ? `Jogando a moeda ${pendente.quantidade} vezes...`
             : 'Jogando a moeda...'}
@@ -19,7 +19,7 @@ export function Resultado({ girando, pendente, rodada, nomesPreenchidos }: Props
       )}
 
       {!girando && !rodada && (
-        <p className="text-lg">
+        <p className="pt-1 text-sm sm:pt-2 sm:text-base">
           {nomesPreenchidos
             ? 'Tudo pronto! Clique em "Jogar a moeda".'
             : 'Coloque o nome de quem é Cara e de quem é Coroa para começar.'}
@@ -37,20 +37,20 @@ function CartaoResultado({ rodada }: { rodada: Rodada }) {
 
   return (
     <div
-      className={`flex w-full flex-col gap-3 rounded-2xl border-2 p-5 ${
-        empate ? 'border-yellow-500 bg-yellow-500/10' : 'border-green-500 bg-green-500/10'
+      className={`cartao surgir flex w-full flex-col gap-2 p-4 ${
+        empate ? 'ring-4 ring-amber-200/70 dark:ring-amber-300/30' : 'ring-4 ring-emerald-200/70 dark:ring-emerald-300/30'
       }`}
     >
       {/* Título */}
       <p
-        className={`text-3xl font-bold break-words ${empate ? 'text-yellow-600' : 'text-green-600'}`}
+        className={`text-2xl font-bold break-words sm:text-3xl ${empate ? 'text-amber-500 dark:text-amber-300' : 'text-emerald-500 dark:text-emerald-300'}`}
       >
-        {empate ? 'Deu empate!' : `${v} venceu!`}
+        {empate ? 'Deu empate! 🤝' : `${v} venceu! 🎉`}
       </p>
 
       {/* Como foi */}
       {rodada.quantidade === 1 ? (
-        <p className="text-lg">
+        <p>
           A moeda caiu em <strong className="uppercase">{rodada.ultimo}</strong>.
         </p>
       ) : (
@@ -59,7 +59,7 @@ function CartaoResultado({ rodada }: { rodada: Rodada }) {
 
       {/* Aposta */}
       {rodada.aposta && (
-        <p className="rounded-lg bg-black/5 px-3 py-2 text-lg break-words dark:bg-white/10">
+        <p className="rounded-2xl bg-pink-50 px-3 py-1.5 break-words dark:bg-white/10">
           {empate ? (
             <>
               Ninguém leva <strong>{rodada.aposta}</strong>. Joguem de novo para desempatar!
@@ -87,22 +87,22 @@ function Contagem({ rodada }: { rodada: Rodada }) {
       </p>
 
       <div className="grid grid-cols-2 gap-2">
-        <div className="rounded-lg bg-black/5 p-2 dark:bg-white/10">
+        <div className="rounded-2xl bg-sky-50 p-2 dark:bg-sky-400/15">
           <p className="truncate text-sm">Cara ({rodada.nomeCara})</p>
-          <p className="text-2xl font-bold">{rodada.caras}x</p>
+          <p className="text-xl font-bold">{rodada.caras}x</p>
           <p className="text-sm">{pctCara}%</p>
         </div>
-        <div className="rounded-lg bg-black/5 p-2 dark:bg-white/10">
+        <div className="rounded-2xl bg-violet-50 p-2 dark:bg-violet-400/15">
           <p className="truncate text-sm">Coroa ({rodada.nomeCoroa})</p>
-          <p className="text-2xl font-bold">{rodada.coroas}x</p>
+          <p className="text-xl font-bold">{rodada.coroas}x</p>
           <p className="text-sm">{pctCoroa}%</p>
         </div>
       </div>
 
       {/* Barra comparando os dois lados */}
-      <div className="flex h-3 w-full overflow-hidden rounded-full bg-black/10">
-        <div className="bg-blue-500" style={{ width: `${pctCara}%` }} />
-        <div className="bg-purple-500" style={{ width: `${pctCoroa}%` }} />
+      <div className="flex h-3 w-full overflow-hidden rounded-full bg-white/60 dark:bg-white/10">
+        <div className="bg-sky-400" style={{ width: `${pctCara}%` }} />
+        <div className="bg-violet-400" style={{ width: `${pctCoroa}%` }} />
       </div>
     </div>
   )

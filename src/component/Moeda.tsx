@@ -11,7 +11,7 @@ type Props = {
 }
 
 const face =
-  'moeda-face flex flex-col items-center justify-center rounded-full border-4 border-yellow-600 bg-yellow-400 px-3 text-5xl text-yellow-900 shadow-lg'
+  'moeda-face flex flex-col items-center justify-center rounded-full border-4 border-amber-300 bg-radial-[at_30%_30%] from-yellow-100 via-yellow-300 to-amber-400 px-3 text-5xl text-amber-900 shadow-[0_12px_30px_-8px_rgba(245,158,11,0.6),inset_0_-6px_0_rgba(217,119,6,0.25)]'
 
 export function Moeda({
   girando,
@@ -23,7 +23,7 @@ export function Moeda({
   onFimDaAnimacao,
 }: Props) {
   return (
-    <div className="moeda-cena mt-24 h-36 w-36">
+    <div className="moeda-cena mt-16 h-28 w-28 shrink-0 sm:mt-20 sm:h-36 sm:w-36">
       <div
         key={animacao.id}
         onAnimationEnd={onFimDaAnimacao}

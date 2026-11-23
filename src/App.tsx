@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { BotaoJogar } from './component/BotaoJogar'
+import { Fundo } from './component/Fundo'
 import { Historico } from './component/Historico'
 import { Jogadores } from './component/Jogadores'
 import { Moeda } from './component/Moeda'
@@ -36,6 +37,18 @@ function App() {
   const nomeCoroa = nomeCoroaInput.trim()
   const nomesPreenchidos = nomeCara !== '' && nomeCoroa !== ''
 
+  // Área da moeda: no celular, rolamos até ela ao jogar
+  const palcoRef = useRef<HTMLDivElement>(null)
+
+  function mostrarMoeda() {
+    const palco = palcoRef.current
+    if (!palco) return
+    const r = palco.getBoundingClientRect()
+    if (r.top < 0 || r.bottom > window.innerHeight) {
+      palco.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+
   function jogar() {
     if (girando || !nomesPreenchidos) return
 
@@ -56,6 +69,7 @@ function App() {
     setPendente(nova)
     setGirando(true)
     setAnimacao((a) => ({ id: a.id + 1, de, ate }))
+    mostrarMoeda()
   }
 
   function fimDaAnimacao() {
@@ -79,49 +93,72 @@ function App() {
   const nomesMoeda = pendente ?? rodada
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-8 p-4 text-center">
-      <h1 className="text-4xl font-bold">Cara ou Coroa</h1>
+    <main className="mx-auto grid min-h-dvh w-full max-w-6xl grid-cols-1 gap-5 px-4 py-5 text-center lg:h-dvh lg:grid-cols-2 lg:gap-8 lg:overflow-hidden lg:px-8">
+      <Fundo />
 
-      <Moeda
-        girando={girando}
-        mostrarFace={rodada !== null || girando}
-        angulo={angulo}
-        animacao={animacao}
-        rotuloCara={nomesMoeda?.nomeCara || nomeCara}
-        rotuloCoroa={nomesMoeda?.nomeCoroa || nomeCoroa}
-        onFimDaAnimacao={fimDaAnimacao}
-      />
+      {/* Coluna da esquerda: o "palco" com a moeda e o resultado */}
+      <div ref={palcoRef} className="flex min-h-0 scroll-mt-2 flex-col items-center gap-2 sm:gap-3">
+        <header className="flex flex-col items-center">
+          <h1 className="titulo-fofo text-4xl font-bold tracking-tight sm:text-5xl">
+            Cara ou Coroa
+          </h1>
+          <p className="text-sm opacity-80 sm:text-base">Decidam na sorte, sem brigas ✨</p>
+        </header>
 
-      <Resultado
-        girando={girando}
-        pendente={pendente}
-        rodada={rodada}
-        nomesPreenchidos={nomesPreenchidos}
-      />
+        <Moeda
+          girando={girando}
+          mostrarFace={rodada !== null || girando}
+          angulo={angulo}
+          animacao={animacao}
+          rotuloCara={nomesMoeda?.nomeCara || nomeCara}
+          rotuloCoroa={nomesMoeda?.nomeCoroa || nomeCoroa}
+          onFimDaAnimacao={fimDaAnimacao}
+        />
 
-      <Jogadores
-        nomeCara={nomeCaraInput}
-        nomeCoroa={nomeCoroaInput}
-        aposta={apostaInput}
-        desabilitado={girando}
-        onNomeCara={setNomeCaraInput}
-        onNomeCoroa={setNomeCoroaInput}
-        onAposta={setApostaInput}
-      />
+        <Resultado
+          girando={girando}
+          pendente={pendente}
+          rodada={rodada}
+          nomesPreenchidos={nomesPreenchidos}
+        />
+      </div>
 
-      <Multiplicador valor={multiplicador} desabilitado={girando} onChange={setMultiplicador} />
+      {/* Coluna da direita: controles + placar */}
+      <div className="flex min-h-0 flex-col items-center gap-4 lg:justify-center">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            jogar()
+          }}
+          className="cartao flex w-full max-w-md shrink-0 flex-col items-center gap-4 p-5"
+        >
+          <Jogadores
+            nomeCara={nomeCaraInput}
+            nomeCoroa={nomeCoroaInput}
+            aposta={apostaInput}
+            desabilitado={girando}
+            onNomeCara={setNomeCaraInput}
+            onNomeCoroa={setNomeCoroaInput}
+            onAposta={setApostaInput}
+          />
 
-      <BotaoJogar girando={girando} nomesPreenchidos={nomesPreenchidos} onJogar={jogar} />
+          <Multiplicador valor={multiplicador} desabilitado={girando} onChange={setMultiplicador} />
 
-      <Placar
-        nomeCara={nomeCara}
-        nomeCoroa={nomeCoroa}
-        cara={placar.cara}
-        coroa={placar.coroa}
-        onZerar={zerar}
-      />
+          <BotaoJogar girando={girando} nomesPreenchidos={nomesPreenchidos} />
+        </form>
 
-      <Historico jogadas={historico} />
+        <section className="cartao flex min-h-0 w-full max-w-md flex-col items-center gap-3 p-5">
+          <Placar
+            nomeCara={nomeCara}
+            nomeCoroa={nomeCoroa}
+            cara={placar.cara}
+            coroa={placar.coroa}
+            onZerar={zerar}
+          />
+
+          <Historico jogadas={historico} />
+        </section>
+      </div>
     </main>
   )
 }

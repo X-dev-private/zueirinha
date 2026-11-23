@@ -9,7 +9,7 @@ type Props = {
 }
 
 const campo =
-  'w-full rounded-lg border-2 border-gray-400 bg-transparent px-3 py-2 disabled:opacity-50'
+  'w-full rounded-2xl border-2 border-pink-200 bg-white/80 px-3 py-1.5 text-[var(--texto-forte)] outline-none transition placeholder:text-pink-300 focus:border-pink-400 focus:ring-4 focus:ring-pink-200/60 disabled:opacity-50 dark:border-white/15 dark:bg-white/10 dark:placeholder:text-white/30 dark:focus:border-violet-300 dark:focus:ring-violet-400/30'
 
 export function Jogadores({
   nomeCara,
@@ -21,11 +21,11 @@ export function Jogadores({
   onAposta,
 }: Props) {
   return (
-    <div className="flex w-full max-w-sm flex-col gap-3 text-left">
+    <div className="flex w-full flex-col gap-3 text-left">
       <div className="flex gap-2">
-        <label className="flex flex-1 flex-col gap-1 text-sm">
+        <label className="flex min-w-0 flex-1 flex-col gap-1 text-sm font-medium">
           <span>
-            Quem é Cara <span className="text-red-500">*</span>
+            🙂 Quem é Cara <span className="text-pink-500">*</span>
           </span>
           <input
             type="text"
@@ -38,9 +38,9 @@ export function Jogadores({
             className={campo}
           />
         </label>
-        <label className="flex flex-1 flex-col gap-1 text-sm">
+        <label className="flex min-w-0 flex-1 flex-col gap-1 text-sm font-medium">
           <span>
-            Quem é Coroa <span className="text-red-500">*</span>
+            👑 Quem é Coroa <span className="text-pink-500">*</span>
           </span>
           <input
             type="text"
@@ -55,8 +55,8 @@ export function Jogadores({
         </label>
       </div>
 
-      <label className="flex flex-col gap-1 text-sm">
-        <span>O que está sendo apostado (opcional)</span>
+      <label className="flex flex-col gap-1 text-sm font-medium">
+        <span>🎁 O que está sendo apostado (opcional)</span>
         <input
           type="text"
           value={aposta}
