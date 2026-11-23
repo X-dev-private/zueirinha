@@ -15,6 +15,7 @@
   --cartao: rgba(255, 255, 255, 0.62);
   --cartao-borda: rgba(255, 255, 255, 0.9);
   --sombra: 0 10px 30px -10px rgba(170, 110, 200, 0.45);
+  --carteira-fundo: #fffafd;
 
   color-scheme: light;
   color: var(--texto);
@@ -36,6 +37,7 @@
     --cartao: rgba(40, 32, 80, 0.55);
     --cartao-borda: rgba(255, 255, 255, 0.12);
     --sombra: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+    --carteira-fundo: #2a2152;
     color-scheme: dark;
   }
 }
@@ -83,6 +85,15 @@ strong {
     opacity: 1;
     transform: none;
   }
+}
+
+/* ---------- Botão da carteira: pílula clara com borda em degradê ---------- */
+.botao-carteira {
+  border: 2px solid transparent;
+  background:
+    linear-gradient(var(--carteira-fundo), var(--carteira-fundo)) padding-box,
+    linear-gradient(90deg, #ff7eb6, #b18cff 50%, #6ec8ff) border-box;
+  box-shadow: 0 6px 18px -6px rgba(177, 140, 255, 0.6);
 }
 
 /* ---------- Fundo animado ---------- */

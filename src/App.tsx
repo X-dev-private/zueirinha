@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { BotaoCarteira } from './component/BotaoCarteira'
 import { BotaoJogar } from './component/BotaoJogar'
 import { Fundo } from './component/Fundo'
 import { Historico } from './component/Historico'
@@ -93,13 +94,14 @@ function App() {
   const nomesMoeda = pendente ?? rodada
 
   return (
-    <main className="mx-auto grid min-h-dvh w-full max-w-6xl grid-cols-1 gap-5 px-4 py-5 text-center lg:h-dvh lg:grid-cols-2 lg:gap-8 lg:overflow-hidden lg:px-8">
+    <main className="relative mx-auto grid min-h-dvh w-full max-w-6xl grid-cols-1 gap-5 px-4 py-5 text-center lg:h-dvh lg:grid-cols-2 lg:grid-rows-[minmax(0,1fr)] lg:gap-8 lg:overflow-hidden lg:px-8">
       <Fundo />
+      <BotaoCarteira />
 
       {/* Coluna da esquerda: o "palco" com a moeda e o resultado */}
       <div ref={palcoRef} className="flex min-h-0 scroll-mt-2 flex-col items-center gap-2 sm:gap-3">
         <header className="flex flex-col items-center">
-          <h1 className="titulo-fofo text-4xl font-bold tracking-tight sm:text-5xl">
+          <h1 className="titulo-fofo text-[2rem] font-bold tracking-tight sm:text-5xl">
             Cara ou Coroa
           </h1>
           <p className="text-sm opacity-80 sm:text-base">Decidam na sorte, sem brigas ✨</p>
@@ -124,7 +126,7 @@ function App() {
       </div>
 
       {/* Coluna da direita: controles + placar */}
-      <div className="flex min-h-0 flex-col items-center gap-4 lg:justify-center">
+      <div className="flex min-h-0 flex-col items-center gap-4 lg:justify-center lg:pt-14">
         <form
           onSubmit={(e) => {
             e.preventDefault()
@@ -147,7 +149,7 @@ function App() {
           <BotaoJogar girando={girando} nomesPreenchidos={nomesPreenchidos} />
         </form>
 
-        <section className="cartao flex min-h-0 w-full max-w-md flex-col items-center gap-3 p-5">
+        <section className="cartao flex w-full max-w-md shrink-0 flex-col items-center gap-3 p-5">
           <Placar
             nomeCara={nomeCara}
             nomeCoroa={nomeCoroa}
