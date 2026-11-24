@@ -26,6 +26,14 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* No computador, tudo um pouco mais compacto (equivale ao zoom de 80% do navegador).
+   Textos, espaçamentos, cartões e a moeda usam rem, então escalam juntos. */
+@media (min-width: 1024px) {
+  :root {
+    font-size: 13.6px; /* 17px × 0,8 */
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --texto: #ddd6f5;
@@ -163,6 +171,16 @@ strong {
 @media (min-width: 640px) {
   .moeda-girando {
     --pulo: -90px;
+  }
+}
+
+/* Pulos em px acompanham a escala de 80% do computador */
+@media (min-width: 1024px) {
+  .moeda-girando {
+    --pulo: -72px;
+  }
+  .moeda-suspense {
+    --pulo-suspense: -32px;
   }
 }
 
