@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
 import { encurtarEndereco, type CarteiraHook } from './carteira'
 import {
   formatarEth,
@@ -40,6 +41,7 @@ export function ApostasCripto({
   onAbrirCarteira,
   onJogarMoeda,
 }: Props) {
+  const { t } = useTranslation()
   const { conta } = carteira
 
   if (!conta) {
@@ -47,8 +49,7 @@ export function ApostasCripto({
       <div className="flex flex-col items-center gap-3 py-4 text-sm">
         <p className="text-4xl">💎</p>
         <p>
-          Aposte <strong>ETH de teste</strong> contra outra carteira. A moeda é jogada pelo próprio
-          contrato, na blockchain, e ninguém consegue roubar.
+          <Trans i18nKey="apostas.intro" components={{ b: <strong /> }} />
         </p>
         {carteira.temCarteira ? (
           <button
@@ -57,7 +58,7 @@ export function ApostasCripto({
             disabled={carteira.conectando}
             className={`${botaoPrincipal} px-6 py-2.5`}
           >
-            {carteira.conectando ? 'Conectando...' : 'Conectar carteira'}
+            {carteira.conectando ? t('carteira.conectando') : t('carteira.conectar')}
           </button>
         ) : (
           <a
@@ -66,7 +67,7 @@ export function ApostasCripto({
             rel="noreferrer"
             className={`${botaoPrincipal} px-6 py-2.5`}
           >
-            Instalar uma carteira
+            {t('carteira.instalarUma')}
           </a>
         )}
       </div>
@@ -77,15 +78,14 @@ export function ApostasCripto({
     return (
       <div className="flex flex-col items-center gap-3 py-4 text-sm">
         <p>
-          As apostas acontecem na rede <strong>Sepolia</strong> (de testes). Troque a rede da sua
-          carteira.
+          <Trans i18nKey="apostas.redeErrada" components={{ b: <strong /> }} />
         </p>
         <button
           type="button"
           onClick={c.trocarParaSepolia}
           className={`${botaoPrincipal} px-6 py-2.5`}
         >
-          Trocar para Sepolia
+          {t('painel.trocarBotao')}
         </button>
       </div>
     )
@@ -109,6 +109,7 @@ function PainelApostas({
   onAbrirCarteira,
   onJogarMoeda,
 }: Omit<Props, 'carteira' | 'contrato'> & { conta: string; c: ContratoHook }) {
+  const { t } = useTranslation()
   const [texto, setTexto] = useState('')
   const [lado, setLado] = useState<Lado>('cara')
   const [filtro, setFiltro] = useState<'todas' | 'minhas'>('todas')
@@ -119,10 +120,10 @@ function PainelApostas({
 
   const valor = lerEth(texto)
   let problema: string | null = null
-  if (texto !== '' && valor === null) problema = 'Valor inválido'
-  else if (valor === 0n) problema = 'O valor precisa ser maior que zero'
+  if (texto !== '' && valor === null) problema = t('validacao.invalido')
+  else if (valor === 0n) problema = t('validacao.maiorQueZero')
   else if (valor !== null && c.saldoContrato !== null && valor > c.saldoContrato)
-    problema = 'Mais do que seu saldo no contrato'
+    problema = t('validacao.maisQueContrato')
   const podeCriar = valor !== null && valor > 0n && !problema && !ocupado
 
   const minhas = (a: Aposta) => mesmoEndereco(a.criador, conta) || mesmoEndereco(a.oponente, conta)
@@ -138,17 +139,20 @@ function PainelApostas({
       {/* Saldo */}
       <div className="flex items-center justify-between gap-2 rounded-2xl bg-violet-100 px-3 py-2 text-sm dark:bg-violet-400/15">
         <span>
-          Saldo para apostar:{' '}
-          <strong>
-            {c.saldoContrato === null ? '…' : `${formatarEth(c.saldoContrato, 5)} ETH`}
-          </strong>
+          <Trans
+            i18nKey="apostas.saldo"
+            values={{
+              saldo: c.saldoContrato === null ? '…' : `${formatarEth(c.saldoContrato, 5)} ETH`,
+            }}
+            components={{ b: <strong /> }}
+          />
         </span>
         <button
           type="button"
           onClick={onAbrirCarteira}
           className={`${botaoPequeno} bg-white/80 hover:bg-white dark:bg-white/10 dark:hover:bg-white/20`}
         >
-          ⬇️ Depositar
+          {t('apostas.depositar')}
         </button>
       </div>
 
@@ -162,12 +166,12 @@ function PainelApostas({
       >
         <div className="flex gap-2">
           <label className="relative min-w-0 flex-1">
-            <span className="sr-only">Valor da aposta em ETH</span>
+            <span className="sr-only">{t('apostas.valorRotulo')}</span>
             <input
               type="text"
               inputMode="decimal"
               autoComplete="off"
-              placeholder="Valor"
+              placeholder={t('apostas.valor')}
               value={texto}
               disabled={ocupado}
               onChange={(e) => setTexto(e.target.value.replace(/[^\d.,]/g, ''))}
@@ -181,7 +185,7 @@ function PainelApostas({
           {/* Escolha do lado */}
           <div
             role="radiogroup"
-            aria-label="Seu lado"
+            aria-label={t('apostas.seuLado')}
             className="flex shrink-0 rounded-full bg-white/70 p-1 dark:bg-white/10"
           >
             {(['cara', 'coroa'] as const).map((l) => (
@@ -192,13 +196,13 @@ function PainelApostas({
                 aria-checked={lado === l}
                 disabled={ocupado}
                 onClick={() => setLado(l)}
-                className={`rounded-full px-2.5 py-1 text-sm font-semibold capitalize transition ${
+                className={`rounded-full px-2.5 py-1 text-sm font-semibold transition ${
                   lado === l
                     ? 'bg-pink-400 text-white shadow-md dark:bg-violet-400'
                     : 'hover:bg-white/80 dark:hover:bg-white/10'
                 }`}
               >
-                {EMOJI[l]} {l}
+                {EMOJI[l]} {t(`lado.${l}`)}
               </button>
             ))}
           </div>
@@ -221,9 +225,9 @@ function PainelApostas({
             disabled={!podeCriar}
             className={`${botaoPrincipal} ml-auto px-4 py-1.5 text-sm`}
           >
-            {enviando && c.tx.estado !== 'parado' && c.tx.acao === 'Aposta criada'
-              ? 'Criando...'
-              : 'Criar aposta'}
+            {enviando && c.tx.estado !== 'parado' && c.tx.acao === 'apostaCriada'
+              ? t('apostas.criando')
+              : t('apostas.criar')}
           </button>
         </div>
         {problema && <p className="text-xs text-pink-600 dark:text-pink-300">{problema}</p>}
@@ -233,29 +237,29 @@ function PainelApostas({
 
       {/* Lista de apostas */}
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold">Apostas</h2>
+        <h2 className="text-sm font-semibold">{t('apostas.titulo')}</h2>
         <div className="flex rounded-full bg-white/70 p-0.5 text-xs dark:bg-white/10">
           {(['todas', 'minhas'] as const).map((f) => (
             <button
               key={f}
               type="button"
               onClick={() => setFiltro(f)}
-              className={`rounded-full px-2.5 py-0.5 font-semibold capitalize transition ${
+              className={`rounded-full px-2.5 py-0.5 font-semibold transition ${
                 filtro === f ? 'bg-pink-400 text-white dark:bg-violet-400' : ''
               }`}
             >
-              {f}
+              {f === 'todas' ? t('apostas.filtroTodas') : t('apostas.filtroMinhas')}
             </button>
           ))}
         </div>
       </div>
 
-      <ul className="-mt-1 flex max-h-52 flex-col gap-1.5 overflow-y-auto pr-1">
+      <ul className="rolagem-suave -mt-1 flex max-h-52 flex-col gap-1.5 overflow-y-auto py-1 pr-1">
         {lista.length === 0 && (
           <li className="rounded-2xl bg-white/50 px-3 py-3 text-center text-sm opacity-80 dark:bg-white/5">
             {filtro === 'minhas'
-              ? 'Você ainda não tem apostas.'
-              : 'Nenhuma aposta ainda. Crie a primeira! ✨'}
+              ? t('apostas.nenhumaMinha')
+              : t('apostas.nenhuma')}
           </li>
         )}
         {lista.map((a) => (
@@ -289,13 +293,18 @@ function ItemAposta({
   onJogarMoeda: (id: number) => void
   onAbrirCarteira: () => void
 }) {
+  const { t } = useTranslation()
   const [devolvendo, setDevolvendo] = useState(false)
   const [textoDevolver, setTextoDevolver] = useState('')
 
   const souCriador = mesmoEndereco(a.criador, conta)
   const souVencedor = mesmoEndereco(a.vencedor, conta)
   const quem = (endereco: string | null) =>
-    !endereco ? 'aguardando…' : mesmoEndereco(endereco, conta) ? 'Você' : encurtarEndereco(endereco)
+    !endereco
+      ? t('apostas.aguardando')
+      : mesmoEndereco(endereco, conta)
+        ? t('voce')
+        : encurtarEndereco(endereco)
 
   const ladoOponente = outroLado(a.ladoCriador)
   const blocosFaltando =
@@ -307,14 +316,14 @@ function ItemAposta({
   const saldoInsuficiente = c.saldoContrato !== null && c.saldoContrato < a.valor
 
   const etiqueta: Record<Aposta['status'], [string, string]> = {
-    aberta: ['Aberta', 'bg-sky-100 text-sky-700 dark:bg-sky-400/15 dark:text-sky-200'],
-    'em-jogo': ['Em jogo', 'bg-amber-100 text-amber-700 dark:bg-amber-400/15 dark:text-amber-200'],
+    aberta: [t('apostas.status.aberta'), 'bg-sky-100 text-sky-700 dark:bg-sky-400/15 dark:text-sky-200'],
+    'em-jogo': [t('apostas.status.em-jogo'), 'bg-amber-100 text-amber-700 dark:bg-amber-400/15 dark:text-amber-200'],
     resolvida: [
-      'Resolvida',
+      t('apostas.status.resolvida'),
       'bg-emerald-100 text-emerald-700 dark:bg-emerald-400/15 dark:text-emerald-200',
     ],
-    cancelada: ['Cancelada', 'bg-gray-200/70 text-gray-600 dark:bg-white/10 dark:text-white/60'],
-    reembolsada: ['Devolvida', 'bg-gray-200/70 text-gray-600 dark:bg-white/10 dark:text-white/60'],
+    cancelada: [t('apostas.status.cancelada'), 'bg-gray-200/70 text-gray-600 dark:bg-white/10 dark:text-white/60'],
+    reembolsada: [t('apostas.status.reembolsada'), 'bg-gray-200/70 text-gray-600 dark:bg-white/10 dark:text-white/60'],
   }
   const [textoEtiqueta, corEtiqueta] = etiqueta[a.status]
 
@@ -355,16 +364,16 @@ function ItemAposta({
               onClick={() => c.cancelarAposta(a.id)}
               className={`${botaoPequeno} bg-white hover:bg-pink-50 dark:bg-white/10 dark:hover:bg-white/20`}
             >
-              Cancelar
+              {t('apostas.cancelar')}
             </button>
           ) : saldoInsuficiente ? (
             <button
               type="button"
               onClick={onAbrirCarteira}
-              title="Seu saldo no contrato não cobre essa aposta"
+              title={t('apostas.saldoNaoCobre')}
               className={`${botaoPequeno} bg-white hover:bg-pink-50 dark:bg-white/10`}
             >
-              Depositar p/ entrar
+              {t('apostas.depositarParaEntrar')}
             </button>
           ) : (
             <button
@@ -373,7 +382,7 @@ function ItemAposta({
               onClick={() => c.entrarAposta(a.id)}
               className={`${botaoPequeno} bg-pink-400 text-white hover:bg-pink-500 dark:bg-violet-400`}
             >
-              Entrar com {EMOJI[ladoOponente]}
+              {t('apostas.entrarCom', { emoji: EMOJI[ladoOponente] })}
             </button>
           ))}
 
@@ -385,10 +394,10 @@ function ItemAposta({
               onClick={() => onJogarMoeda(a.id)}
               className={`${botaoPequeno} animate-pulse bg-linear-to-r from-pink-400 to-violet-400 text-white`}
             >
-              {expirou ? 'Reembolsar' : '🪙 Jogar a moeda'}
+              {expirou ? t('apostas.reembolsar') : t('apostas.jogarMoeda')}
             </button>
           ) : (
-            <span className="shrink-0 text-xs opacity-70">⏳ próximo bloco…</span>
+            <span className="shrink-0 text-xs opacity-70">{t('apostas.proximoBloco')}</span>
           ))}
 
         {a.status === 'resolvida' && (
@@ -408,7 +417,7 @@ function ItemAposta({
               }}
               className="text-xs underline decoration-dotted underline-offset-2 opacity-80 hover:opacity-100"
             >
-              🤝 Devolver ao perdedor (só pelo esporte)
+              {t('apostas.devolverAbrir')}
             </button>
           ) : (
             <form
@@ -422,7 +431,7 @@ function ItemAposta({
               <input
                 type="text"
                 inputMode="decimal"
-                aria-label="Quanto devolver em ETH"
+                aria-label={t('apostas.quantoDevolver')}
                 value={textoDevolver}
                 disabled={ocupado}
                 onChange={(e) => setTextoDevolver(e.target.value.replace(/[^\d.,]/g, ''))}
@@ -433,12 +442,12 @@ function ItemAposta({
                 disabled={!devolucaoValida || ocupado}
                 className={`${botaoPequeno} bg-pink-400 text-white dark:bg-violet-400`}
               >
-                Devolver
+                {t('apostas.devolver')}
               </button>
               <button
                 type="button"
                 onClick={() => setDevolvendo(false)}
-                aria-label="Cancelar devolução"
+                aria-label={t('apostas.cancelarDevolucao')}
                 className="grid h-6 w-6 place-items-center rounded-full text-xs opacity-60 hover:opacity-100"
               >
                 ✕
@@ -449,7 +458,7 @@ function ItemAposta({
       )}
       {a.status === 'resolvida' && a.devolvido > 0n && (
         <p className="mt-1 text-[11px] opacity-70">
-          🤝 {formatarEth(a.devolvido, 5)} ETH devolvido ao perdedor
+          {t('apostas.devolvido', { valor: formatarEth(a.devolvido, 5) })}
         </p>
       )}
     </li>

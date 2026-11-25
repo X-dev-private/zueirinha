@@ -1,0 +1,161 @@
+import type { Traducao } from './pt'
+
+// Türkçe
+const tr: Traducao = {
+  titulo: 'Yazı mı Tura mı',
+  subtitulo: 'Şans karar versin, kavga yok ✨',
+  lado: { cara: 'Tura', coroa: 'Yazı' },
+  voce: 'Sen',
+
+  modo: {
+    rotulo: 'Oyun modu',
+    local: '🎲 Arkadaşlarla',
+    cripto: '💎 ETH ile',
+  },
+
+  jogadores: {
+    quemCara: '🙂 Tura kim',
+    quemCoroa: '👑 Yazı kim',
+    nome: 'İsim',
+    aposta: '🎁 Ne için oynanıyor (isteğe bağlı)',
+    apostaExemplo: 'Örn.: atıştırmalıkları kim ısmarlar',
+  },
+  multiplicador: { rotulo: 'Atış sayısı' },
+  jogar: {
+    botao: 'Parayı at 🪙',
+    girando: 'Dönüyor...',
+    preencha: 'Oynamak için iki ismi de yazın',
+  },
+  placar: { titulo: 'Skor', zerar: '↺ Skoru sıfırla' },
+  historico: { titulo: 'Son atışlar', fechar: 'Kapat', empate: '🤝 Berabere' },
+
+  resultado: {
+    jogando: 'Para atılıyor...',
+    jogandoVezes: 'Para {{count}} kez atılıyor...',
+    blockchain: 'Para blokzincirde atılıyor... ⛓️',
+    pronto: 'Her şey hazır! "Parayı at" düğmesine tıklayın.',
+    comecar: 'Başlamak için kimin tura, kimin yazı olduğunu yazın.',
+    vazioCripto: 'Bir bahis oluşturun ya da açık bir bahse katılın. Para atıldığında burada döner! 🪙',
+    empate: 'Berabere! 🤝',
+    venceu: '{{nome}} kazandı! 🎉',
+    caiuEm: 'Para <b>{{lado}}</b> geldi.',
+    ninguemLeva: 'Kimse <b>{{aposta}}</b> kazanmıyor. Beraberliği bozmak için tekrar atın!',
+    leva: '<b>{{nome}}</b>, <b>{{aposta}}</b> kazanıyor!',
+    emJogadas: '<b>{{count}}</b> atışta para şöyle geldi:',
+  },
+
+  carteira: {
+    instalar: 'Cüzdan yükle',
+    instalarTitulo: 'Bağlanmak için bir cüzdan (örn. MetaMask) yükleyin',
+    instalarUma: 'Bir cüzdan yükle',
+    conectar: 'Cüzdanı bağla',
+    conectando: 'Bağlanıyor...',
+    abrirPainel: 'Cüzdan panelini aç',
+    desconectar: 'Bağlantıyı kes',
+  },
+
+  painel: {
+    titulo: '💎 Yatırma sözleşmesi',
+    redeOk: '● Sepolia (test)',
+    redeErrada: '● Yanlış ağ',
+    trocarRede:
+      'Bu sözleşme <b>Sepolia</b> ağında (test ağı). Devam etmek için cüzdanınızın ağını değiştirin.',
+    trocarBotao: "Sepolia'ya geç",
+    naCarteira: 'Cüzdanda',
+    noContrato: 'Sözleşmede',
+    semEth: "Test ETH'niz yok mu? <link>Sepolia musluğundan</link> ücretsiz alın.",
+    abaDepositar: '⬇️ Yatır',
+    abaSacar: '⬆️ Çek',
+    valor: 'Miktar',
+    sacarTudo: 'Hepsini çek',
+    taxa: 'Sözleşme ücreti (%{{pct}})',
+    vaiParaSaldo: 'Bakiyenize eklenir',
+    aguarde: 'Bekleyin...',
+    depositar: 'Yatır',
+    sacar: 'Çek',
+  },
+
+  validacao: {
+    invalido: 'Geçersiz miktar',
+    maiorQueZero: 'Miktar sıfırdan büyük olmalı',
+    maisQueCarteira: 'Cüzdanınızdakinden fazla',
+    maisQueContrato: 'Sözleşmedeki bakiyenizden fazla',
+  },
+
+  apostas: {
+    intro:
+      'Başka bir cüzdana karşı <b>test ETH</b> ile bahse girin. Parayı blokzincirde sözleşmenin kendisi atar, kimse hile yapamaz.',
+    redeErrada: 'Bahisler <b>Sepolia</b> ağında (test ağı) yapılır. Cüzdanınızın ağını değiştirin.',
+    saldo: 'Bahis bakiyesi: <b>{{saldo}}</b>',
+    depositar: '⬇️ Yatır',
+    valorRotulo: 'ETH cinsinden bahis miktarı',
+    valor: 'Miktar',
+    seuLado: 'Senin tarafın',
+    criar: 'Bahis oluştur',
+    criando: 'Oluşturuluyor...',
+    titulo: 'Bahisler',
+    filtroTodas: 'Tümü',
+    filtroMinhas: 'Benimkiler',
+    nenhumaMinha: 'Henüz bahsiniz yok.',
+    nenhuma: 'Henüz bahis yok. İlkini oluşturun! ✨',
+    aguardando: 'bekleniyor…',
+    status: {
+      aberta: 'Açık',
+      'em-jogo': 'Oyunda',
+      resolvida: 'Sonuçlandı',
+      cancelada: 'İptal edildi',
+      reembolsada: 'İade edildi',
+    },
+    cancelar: 'İptal',
+    saldoNaoCobre: 'Sözleşmedeki bakiyeniz bu bahsi karşılamıyor',
+    depositarParaEntrar: 'Katılmak için yatır',
+    entrarCom: '{{emoji}} ile katıl',
+    reembolsar: 'İade et',
+    jogarMoeda: '🪙 Parayı at',
+    proximoBloco: '⏳ sonraki blok…',
+    devolverAbrir: '🤝 Kaybedene geri ver (sadece eğlence için)',
+    quantoDevolver: 'ETH olarak ne kadar geri verilecek',
+    devolver: 'Geri ver',
+    cancelarDevolucao: 'Geri vermeyi iptal et',
+    devolvido: '🤝 Kaybedene {{valor}} ETH geri verildi',
+    premio: '{{valor}} ETH (bahis #{{id}})',
+  },
+
+  tx: {
+    assinando: '✍️ İşlemi cüzdanınızda onaylayın...',
+    confirmando: '⏳ Gönderildi! Ağın onaylaması bekleniyor…',
+    verEtherscan: "Etherscan'de gör",
+    acoes: {
+      deposito: 'Yatırma onaylandı',
+      saque: 'Çekim onaylandı',
+      apostaCriada: 'Bahis oluşturuldu',
+      entrouAposta: 'Bahse katıldınız',
+      moedaJogada: 'Para atıldı',
+      apostaCancelada: 'Bahis iptal edildi',
+      valorDevolvido: 'Miktar geri verildi',
+    },
+  },
+
+  erros: {
+    semCarteira: 'Cüzdan bulunamadı',
+    cancelado: 'Cüzdanda iptal edildi',
+    pedidoAberto: 'Cüzdanınızda bekleyen bir istek var, bir göz atın',
+    semGas: 'Miktar + ağ ücreti (gas) için bakiye yetersiz',
+    generico: 'Bir şeyler ters gitti. Lütfen tekrar deneyin.',
+    contrato: {
+      InsufficientBalance: 'Sözleşmede yeterli bakiye yok. Cüzdanınızdan daha fazla yatırın.',
+      ZeroAmount: 'Miktar sıfırdan büyük olmalı',
+      BetNotOpen: 'Bu bahis artık açık değil',
+      BetNotJoined: 'Bu bahis para atışını beklemiyor',
+      NotBetCreator: 'Bahsi yalnızca oluşturan kişi iptal edebilir',
+      CannotJoinOwnBet: 'Kendi bahsinize katılamazsınız',
+      TooEarly: 'Henüz erken: parayı atmak için sonraki bloğu bekleyin',
+      NotBetWinner: 'Yalnızca kazanan geri verebilir',
+      BetNotResolved: 'Bahis henüz sonuçlanmadı',
+      ReturnTooHigh: 'Kaybedenin yatırdığından fazlasını geri veremezsiniz',
+      TransferFailed: 'Transfer başarısız oldu',
+    },
+  },
+}
+
+export default tr

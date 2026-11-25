@@ -1,8 +1,11 @@
 import type { ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import { SEPOLIA, type EstadoTx } from './contrato'
 
 // Andamento de uma transação: assinando -> confirmando -> ok / erro
 export function StatusTx({ tx }: { tx: Exclude<EstadoTx, { estado: 'parado' }> }) {
+  const { t } = useTranslation()
+  const ver = t('tx.verEtherscan')
   return (
     <div
       role="status"
@@ -14,16 +17,16 @@ export function StatusTx({ tx }: { tx: Exclude<EstadoTx, { estado: 'parado' }> }
             : 'bg-violet-50 dark:bg-violet-400/15'
       }`}
     >
-      {tx.estado === 'assinando' && '✍️ Confirme a transação na sua carteira...'}
+      {tx.estado === 'assinando' && t('tx.assinando')}
       {tx.estado === 'confirmando' && (
         <>
-          ⏳ Enviada! Esperando a rede confirmar…{' '}
-          <LinkEtherscan caminho={`tx/${tx.hash}`}>ver no Etherscan</LinkEtherscan>
+          {t('tx.confirmando')}{' '}
+          <LinkEtherscan caminho={`tx/${tx.hash}`}>{ver}</LinkEtherscan>
         </>
       )}
       {tx.estado === 'ok' && (
         <>
-          ✅ {tx.acao}! <LinkEtherscan caminho={`tx/${tx.hash}`}>ver no Etherscan</LinkEtherscan>
+          ✅ {t(`tx.acoes.${tx.acao}`)}! <LinkEtherscan caminho={`tx/${tx.hash}`}>{ver}</LinkEtherscan>
         </>
       )}
       {tx.estado === 'erro' && (
@@ -32,7 +35,7 @@ export function StatusTx({ tx }: { tx: Exclude<EstadoTx, { estado: 'parado' }> }
           {tx.hash && (
             <>
               {' '}
-              <LinkEtherscan caminho={`tx/${tx.hash}`}>ver no Etherscan</LinkEtherscan>
+              <LinkEtherscan caminho={`tx/${tx.hash}`}>{ver}</LinkEtherscan>
             </>
           )}
         </>

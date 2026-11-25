@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { vencedor, type Rodada } from './jogo'
 import { useFecharAoClicarFora } from './useFecharAoClicarFora'
 
@@ -9,6 +10,7 @@ type Props = {
 // Botão "Ver últimas jogadas" que abre um painel flutuante por cima do
 // conteúdo, sem empurrar nada para fora da tela.
 export function Historico({ jogadas }: Props) {
+  const { t } = useTranslation()
   const [aberto, setAberto] = useState(false)
   const caixaRef = useRef<HTMLDivElement>(null)
 
@@ -22,25 +24,25 @@ export function Historico({ jogadas }: Props) {
       <div
         id="painel-historico"
         role="dialog"
-        aria-label="Últimas jogadas"
+        aria-label={t('historico.titulo')}
         inert={!aberto}
         className={`absolute right-0 bottom-full left-0 z-20 mb-2 origin-bottom rounded-3xl border-2 border-white bg-[var(--carteira-fundo)] p-3 text-left shadow-2xl shadow-violet-300/40 transition duration-200 ease-out dark:border-white/10 dark:shadow-black/50 ${
           aberto ? 'translate-y-0 scale-100 opacity-100' : 'pointer-events-none translate-y-2 scale-95 opacity-0'
         }`}
       >
         <div className="mb-2 flex items-center justify-between px-1">
-          <h2 className="text-sm font-semibold">🕘 Últimas jogadas</h2>
+          <h2 className="text-sm font-semibold">🕘 {t('historico.titulo')}</h2>
           <button
             type="button"
             onClick={() => setAberto(false)}
-            aria-label="Fechar"
+            aria-label={t('historico.fechar')}
             className="grid h-7 w-7 place-items-center rounded-full text-xs opacity-60 transition hover:bg-pink-100 hover:opacity-100 dark:hover:bg-white/10"
           >
             ✕
           </button>
         </div>
 
-        <ul className="flex max-h-60 flex-col gap-1 overflow-y-auto pr-1">
+        <ul className="rolagem-suave flex max-h-60 flex-col gap-1 overflow-y-auto py-1 pr-1">
           {jogadas.map((j, i) => {
             const v = vencedor(j)
             return (
@@ -55,7 +57,7 @@ export function Historico({ jogadas }: Props) {
                 <span className="shrink-0 opacity-60">#{jogadas.length - i}</span>
                 <span className="min-w-0">
                   {j.quantidade > 1 && `${j.quantidade}x · `}
-                  {v === null ? '🤝 Empate' : `🏆 ${v}`}
+                  {v === null ? t('historico.empate') : `🏆 ${v}`}
                   {j.quantidade > 1 && ` (${j.caras} × ${j.coroas})`}
                   {j.aposta && ` · ${j.aposta}`}
                 </span>
@@ -74,7 +76,7 @@ export function Historico({ jogadas }: Props) {
         className="flex w-full items-center justify-between rounded-2xl bg-white/60 px-4 py-2 text-sm font-semibold text-[var(--texto-forte)] transition hover:bg-white/90 dark:bg-white/10 dark:hover:bg-white/15"
       >
         <span className="flex items-center gap-2">
-          🕘 Últimas jogadas
+          🕘 {t('historico.titulo')}
           <span className="rounded-full bg-pink-400 px-2 text-xs leading-5 text-white dark:bg-violet-400">
             {jogadas.length}
           </span>

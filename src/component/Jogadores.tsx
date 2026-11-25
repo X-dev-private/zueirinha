@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next'
+
 type Props = {
   nomeCara: string
   nomeCoroa: string
@@ -20,17 +22,18 @@ export function Jogadores({
   onNomeCoroa,
   onAposta,
 }: Props) {
+  const { t } = useTranslation()
   return (
     <div className="flex w-full flex-col gap-3 text-left">
       <div className="flex gap-2">
         <label className="flex min-w-0 flex-1 flex-col gap-1 text-sm font-medium">
           <span>
-            🙂 Quem é Cara <span className="text-pink-500">*</span>
+            {t('jogadores.quemCara')} <span className="text-pink-500">*</span>
           </span>
           <input
             type="text"
             value={nomeCara}
-            placeholder="Nome"
+            placeholder={t('jogadores.nome')}
             maxLength={30}
             required
             disabled={desabilitado}
@@ -40,12 +43,12 @@ export function Jogadores({
         </label>
         <label className="flex min-w-0 flex-1 flex-col gap-1 text-sm font-medium">
           <span>
-            👑 Quem é Coroa <span className="text-pink-500">*</span>
+            {t('jogadores.quemCoroa')} <span className="text-pink-500">*</span>
           </span>
           <input
             type="text"
             value={nomeCoroa}
-            placeholder="Nome"
+            placeholder={t('jogadores.nome')}
             maxLength={30}
             required
             disabled={desabilitado}
@@ -56,11 +59,11 @@ export function Jogadores({
       </div>
 
       <label className="flex flex-col gap-1 text-sm font-medium">
-        <span>🎁 O que está sendo apostado (opcional)</span>
+        <span>{t('jogadores.aposta')}</span>
         <input
           type="text"
           value={aposta}
-          placeholder="Ex.: quem paga o lanche"
+          placeholder={t('jogadores.apostaExemplo')}
           maxLength={100}
           disabled={desabilitado}
           onChange={(e) => onAposta(e.target.value)}

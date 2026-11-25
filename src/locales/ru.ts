@@ -1,0 +1,161 @@
+import type { Traducao } from './pt'
+
+// Русский
+const ru: Traducao = {
+  titulo: 'Орёл или решка',
+  subtitulo: 'Пусть решит удача, без споров ✨',
+  lado: { cara: 'Орёл', coroa: 'Решка' },
+  voce: 'Вы',
+
+  modo: {
+    rotulo: 'Режим игры',
+    local: '🎲 С друзьями',
+    cripto: '💎 На ETH',
+  },
+
+  jogadores: {
+    quemCara: '🙂 Кто за орла',
+    quemCoroa: '👑 Кто за решку',
+    nome: 'Имя',
+    aposta: '🎁 На что спорим (необязательно)',
+    apostaExemplo: 'Напр.: кто платит за перекус',
+  },
+  multiplicador: { rotulo: 'Количество бросков' },
+  jogar: {
+    botao: 'Бросить монету 🪙',
+    girando: 'Крутится...',
+    preencha: 'Введите оба имени, чтобы играть',
+  },
+  placar: { titulo: 'Счёт', zerar: '↺ Сбросить счёт' },
+  historico: { titulo: 'Последние броски', fechar: 'Закрыть', empate: '🤝 Ничья' },
+
+  resultado: {
+    jogando: 'Бросаем монету...',
+    jogandoVezes: 'Бросаем монету {{count}} раз...',
+    blockchain: 'Бросаем монету в блокчейне... ⛓️',
+    pronto: 'Всё готово! Нажмите «Бросить монету».',
+    comecar: 'Укажите, кто за орла, а кто за решку, чтобы начать.',
+    vazioCripto: 'Создайте ставку или присоединитесь к открытой. Когда монету бросят, она закрутится здесь! 🪙',
+    empate: 'Ничья! 🤝',
+    venceu: '{{nome}} побеждает! 🎉',
+    caiuEm: 'Монета упала на <b>{{lado}}</b>.',
+    ninguemLeva: 'Никто не получает <b>{{aposta}}</b>. Бросьте ещё раз, чтобы определить победителя!',
+    leva: '<b>{{nome}}</b> получает <b>{{aposta}}</b>!',
+    emJogadas: 'За <b>{{count}}</b> бросков монета упала:',
+  },
+
+  carteira: {
+    instalar: 'Установить кошелёк',
+    instalarTitulo: 'Установите кошелёк (напр. MetaMask), чтобы подключиться',
+    instalarUma: 'Установить кошелёк',
+    conectar: 'Подключить кошелёк',
+    conectando: 'Подключение...',
+    abrirPainel: 'Открыть панель кошелька',
+    desconectar: 'Отключить',
+  },
+
+  painel: {
+    titulo: '💎 Депозитный контракт',
+    redeOk: '● Sepolia (тест)',
+    redeErrada: '● Не та сеть',
+    trocarRede:
+      'Этот контракт находится в сети <b>Sepolia</b> (тестовой). Переключите сеть в кошельке, чтобы продолжить.',
+    trocarBotao: 'Переключить на Sepolia',
+    naCarteira: 'В кошельке',
+    noContrato: 'В контракте',
+    semEth: 'Нет тестовых ETH? Получите бесплатно в <link>кране Sepolia</link>.',
+    abaDepositar: '⬇️ Внести',
+    abaSacar: '⬆️ Вывести',
+    valor: 'Сумма',
+    sacarTudo: 'Вывести всё',
+    taxa: 'Комиссия контракта ({{pct}}%)',
+    vaiParaSaldo: 'Зачислится на ваш баланс',
+    aguarde: 'Подождите...',
+    depositar: 'Внести',
+    sacar: 'Вывести',
+  },
+
+  validacao: {
+    invalido: 'Неверная сумма',
+    maiorQueZero: 'Сумма должна быть больше нуля',
+    maisQueCarteira: 'Больше, чем есть в кошельке',
+    maisQueContrato: 'Больше, чем есть в контракте',
+  },
+
+  apostas: {
+    intro:
+      'Ставьте <b>тестовые ETH</b> против другого кошелька. Монету бросает сам контракт в блокчейне — схитрить никто не сможет.',
+    redeErrada: 'Ставки проходят в сети <b>Sepolia</b> (тестовой). Переключите сеть в кошельке.',
+    saldo: 'Баланс для ставок: <b>{{saldo}}</b>',
+    depositar: '⬇️ Внести',
+    valorRotulo: 'Сумма ставки в ETH',
+    valor: 'Сумма',
+    seuLado: 'Ваша сторона',
+    criar: 'Создать ставку',
+    criando: 'Создаём...',
+    titulo: 'Ставки',
+    filtroTodas: 'Все',
+    filtroMinhas: 'Мои',
+    nenhumaMinha: 'У вас пока нет ставок.',
+    nenhuma: 'Ставок пока нет. Создайте первую! ✨',
+    aguardando: 'ожидание…',
+    status: {
+      aberta: 'Открыта',
+      'em-jogo': 'В игре',
+      resolvida: 'Завершена',
+      cancelada: 'Отменена',
+      reembolsada: 'Возвращена',
+    },
+    cancelar: 'Отменить',
+    saldoNaoCobre: 'Вашего баланса в контракте не хватает для этой ставки',
+    depositarParaEntrar: 'Внести, чтобы войти',
+    entrarCom: 'Войти за {{emoji}}',
+    reembolsar: 'Вернуть',
+    jogarMoeda: '🪙 Бросить монету',
+    proximoBloco: '⏳ ждём следующий блок…',
+    devolverAbrir: '🤝 Вернуть проигравшему (просто ради спорта)',
+    quantoDevolver: 'Сколько вернуть в ETH',
+    devolver: 'Вернуть',
+    cancelarDevolucao: 'Отменить возврат',
+    devolvido: '🤝 Проигравшему возвращено {{valor}} ETH',
+    premio: '{{valor}} ETH (ставка #{{id}})',
+  },
+
+  tx: {
+    assinando: '✍️ Подтвердите транзакцию в кошельке...',
+    confirmando: '⏳ Отправлено! Ждём подтверждения сети…',
+    verEtherscan: 'смотреть в Etherscan',
+    acoes: {
+      deposito: 'Депозит подтверждён',
+      saque: 'Вывод подтверждён',
+      apostaCriada: 'Ставка создана',
+      entrouAposta: 'Вы вошли в ставку',
+      moedaJogada: 'Монета брошена',
+      apostaCancelada: 'Ставка отменена',
+      valorDevolvido: 'Сумма возвращена',
+    },
+  },
+
+  erros: {
+    semCarteira: 'Кошелёк не найден',
+    cancelado: 'Отменено в кошельке',
+    pedidoAberto: 'В кошельке уже есть ожидающий запрос — загляните туда',
+    semGas: 'Недостаточно средств для суммы + комиссии сети (газ)',
+    generico: 'Что-то пошло не так. Попробуйте ещё раз.',
+    contrato: {
+      InsufficientBalance: 'Недостаточно средств в контракте. Внесите ещё из кошелька.',
+      ZeroAmount: 'Сумма должна быть больше нуля',
+      BetNotOpen: 'Эта ставка больше не открыта',
+      BetNotJoined: 'Эта ставка не ждёт броска',
+      NotBetCreator: 'Отменить ставку может только её создатель',
+      CannotJoinOwnBet: 'Нельзя войти в собственную ставку',
+      TooEarly: 'Слишком рано: дождитесь следующего блока, чтобы бросить монету',
+      NotBetWinner: 'Вернуть может только победитель',
+      BetNotResolved: 'Ставка ещё не завершена',
+      ReturnTooHigh: 'Нельзя вернуть больше, чем поставил проигравший',
+      TransferFailed: 'Перевод не удался',
+    },
+  },
+}
+
+export default ru

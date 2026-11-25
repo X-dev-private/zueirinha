@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import { useTranslation } from 'react-i18next'
 
 type Props = {
   girando: boolean
@@ -25,6 +26,7 @@ export function Moeda({
   rotuloCoroa,
   onFimDaAnimacao,
 }: Props) {
+  const { t } = useTranslation()
   return (
     <div className="moeda-cena mt-16 h-28 w-28 shrink-0 sm:mt-20 sm:h-36 sm:w-36">
       <div
@@ -42,12 +44,12 @@ export function Moeda({
         <div className={face}>
           <span>{mostrarFace || aguardando ? '🙂' : '?'}</span>
           {(mostrarFace || aguardando) && (
-            <span className="max-w-full truncate text-sm font-bold">{rotuloCara || 'CARA'}</span>
+            <span className="max-w-full truncate text-sm font-bold">{rotuloCara || t('lado.cara').toUpperCase()}</span>
           )}
         </div>
         <div className={`${face} moeda-verso`}>
           <span>👑</span>
-          <span className="max-w-full truncate text-sm font-bold">{rotuloCoroa || 'COROA'}</span>
+          <span className="max-w-full truncate text-sm font-bold">{rotuloCoroa || t('lado.coroa').toUpperCase()}</span>
         </div>
       </div>
     </div>

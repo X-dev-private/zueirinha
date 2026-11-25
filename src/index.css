@@ -104,6 +104,44 @@ strong {
   box-shadow: 0 6px 18px -6px rgba(177, 140, 255, 0.6);
 }
 
+/* ---------- Barras de rolagem: finas, em degradê, sem trilho branco ---------- */
+/* Chrome, Edge, Safari, Opera */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  /* a borda transparente "afina" o polegar e deixa um respiro nas laterais */
+  border: 2px solid transparent;
+  border-radius: 9999px;
+  background: linear-gradient(180deg, #ffa8d5, #b9a2ff) padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ff7eb6, #9f7bff) padding-box;
+}
+
+/* Firefox (não tem degradê na barra: usa a cor do meio) */
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #d4a5f5 transparent;
+  }
+}
+
+/* Listas que rolam: o conteúdo some suavemente nas bordas em vez de ser cortado */
+.rolagem-suave {
+  mask-image: linear-gradient(to bottom, transparent, #000 10px, #000 calc(100% - 14px), transparent);
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+}
+
 /* ---------- Fundo animado ---------- */
 .bolha {
   position: absolute;

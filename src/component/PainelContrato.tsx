@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
 import { encurtarEndereco } from './carteira'
 import { ENDERECO_CONTRATO, SEPOLIA, formatarEth, lerEth, type ContratoHook } from './contrato'
 import { LinkEtherscan, StatusTx } from './StatusTx'
@@ -21,6 +22,7 @@ const chip =
   'rounded-full bg-white/70 px-3 py-1 text-xs font-semibold transition hover:bg-white active:scale-95 disabled:opacity-50 dark:bg-white/10 dark:hover:bg-white/20'
 
 export function PainelContrato({ conta, contrato: c, aberto, onDesconectar }: Props) {
+  const { t } = useTranslation()
   const [operacao, setOperacao] = useState<Operacao>('depositar')
   const [texto, setTexto] = useState('')
 
@@ -38,13 +40,13 @@ export function PainelContrato({ conta, contrato: c, aberto, onDesconectar }: Pr
   const liquido = taxa !== null && valor !== null ? valor - taxa : null
 
   let problema: string | null = null
-  if (texto !== '' && valor === null) problema = 'Valor inválido'
-  else if (valor !== null && valor === 0n) problema = 'O valor precisa ser maior que zero'
+  if (texto !== '' && valor === null) problema = t('validacao.invalido')
+  else if (valor !== null && valor === 0n) problema = t('validacao.maiorQueZero')
   else if (valor !== null && saldoDisponivel !== null && valor > saldoDisponivel)
     problema =
       operacao === 'depositar'
-        ? 'Mais do que você tem na carteira'
-        : 'Mais do que você tem no contrato'
+        ? t('validacao.maisQueCarteira')
+        : t('validacao.maisQueContrato')
 
   const podeEnviar = c.naRedeCerta && valor !== null && valor > 0n && problema === null && !ocupado
 
@@ -63,7 +65,7 @@ export function PainelContrato({ conta, contrato: c, aberto, onDesconectar }: Pr
   return (
     <div
       role="dialog"
-      aria-label="Contrato de depósito"
+      aria-label={t('painel.titulo')}
       inert={!aberto}
       className={`absolute top-full right-0 mt-2 w-[min(22rem,calc(100vw-1rem))] origin-top-right rounded-3xl border-2 border-white bg-[var(--carteira-fundo)] p-4 text-left shadow-2xl shadow-violet-300/40 transition duration-200 ease-out dark:border-white/10 dark:shadow-black/50 ${
         aberto
@@ -74,7 +76,7 @@ export function PainelContrato({ conta, contrato: c, aberto, onDesconectar }: Pr
       {/* Cabeçalho */}
       <div className="mb-3 flex items-start justify-between gap-2">
         <div>
-          <h2 className="text-base font-semibold">💎 Contrato de depósito</h2>
+          <h2 className="text-base font-semibold">{t('painel.titulo')}</h2>
           <p className="text-xs opacity-70">
             <LinkEtherscan caminho={`address/${ENDERECO_CONTRATO}`}>
               {encurtarEndereco(ENDERECO_CONTRATO)}
@@ -88,7 +90,7 @@ export function PainelContrato({ conta, contrato: c, aberto, onDesconectar }: Pr
               : 'bg-amber-100 text-amber-700 dark:bg-amber-400/15 dark:text-amber-200'
           }`}
         >
-          {c.naRedeCerta ? '● Sepolia (teste)' : '● Rede errada'}
+          {c.naRedeCerta ? t('painel.redeOk') : t('painel.redeErrada')}
         </span>
       </div>
 
@@ -96,15 +98,14 @@ export function PainelContrato({ conta, contrato: c, aberto, onDesconectar }: Pr
         // Carteira em outra rede
         <div className="flex flex-col items-center gap-3 rounded-2xl bg-amber-50 p-4 text-center text-sm dark:bg-amber-400/10">
           <p>
-            Esse contrato fica na rede <strong>Sepolia</strong> (de testes). Troque a rede da sua
-            carteira para continuar.
+            <Trans i18nKey="painel.trocarRede" components={{ b: <strong /> }} />
           </p>
           <button
             type="button"
             onClick={c.trocarParaSepolia}
             className="rounded-full bg-linear-to-r from-pink-400 to-violet-400 px-5 py-2 font-bold text-white shadow-md transition hover:-translate-y-0.5 active:scale-95"
           >
-            Trocar para Sepolia
+            {t('painel.trocarBotao')}
           </button>
         </div>
       ) : (
@@ -112,13 +113,13 @@ export function PainelContrato({ conta, contrato: c, aberto, onDesconectar }: Pr
           {/* Saldos */}
           <div className="mb-3 grid grid-cols-2 gap-2 text-center">
             <div className="rounded-2xl bg-sky-100 px-2 py-1.5 dark:bg-sky-400/15">
-              <p className="text-xs">Na carteira</p>
+              <p className="text-xs">{t('painel.naCarteira')}</p>
               <p className="truncate font-bold">
                 {c.saldoCarteira === null ? '…' : `${formatarEth(c.saldoCarteira, 4)} ETH`}
               </p>
             </div>
             <div className="rounded-2xl bg-violet-100 px-2 py-1.5 dark:bg-violet-400/15">
-              <p className="text-xs">No contrato</p>
+              <p className="text-xs">{t('painel.noContrato')}</p>
               <p className="truncate font-bold">
                 {c.saldoContrato === null ? '…' : `${formatarEth(c.saldoContrato, 4)} ETH`}
               </p>
@@ -127,16 +128,19 @@ export function PainelContrato({ conta, contrato: c, aberto, onDesconectar }: Pr
 
           {c.saldoCarteira === 0n && (
             <p className="mb-3 rounded-2xl bg-pink-50 px-3 py-2 text-xs dark:bg-white/10">
-              Sem ETH de teste? Pegue de graça numa{' '}
-              <a
-                href={SEPOLIA.torneira}
-                target="_blank"
-                rel="noreferrer"
-                className="font-semibold underline"
-              >
-                torneira da Sepolia
-              </a>
-              .
+              <Trans
+                i18nKey="painel.semEth"
+                components={{
+                  link: (
+                    <a
+                      href={SEPOLIA.torneira}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="font-semibold underline"
+                    />
+                  ),
+                }}
+              />
             </p>
           )}
 
@@ -154,7 +158,7 @@ export function PainelContrato({ conta, contrato: c, aberto, onDesconectar }: Pr
                     : 'hover:bg-white/80 dark:hover:bg-white/10'
                 }`}
               >
-                {o === 'depositar' ? '⬇️ Depositar' : '⬆️ Sacar'}
+                {o === 'depositar' ? t('painel.abaDepositar') : t('painel.abaSacar')}
               </button>
             ))}
           </div>
@@ -167,7 +171,7 @@ export function PainelContrato({ conta, contrato: c, aberto, onDesconectar }: Pr
             className="flex flex-col gap-2"
           >
             <label className="flex flex-col gap-1 text-sm font-medium">
-              <span>Valor</span>
+              <span>{t('painel.valor')}</span>
               <span className="relative">
                 <input
                   type="text"
@@ -206,7 +210,7 @@ export function PainelContrato({ conta, contrato: c, aberto, onDesconectar }: Pr
                       onClick={() => setTexto(formatarEth(c.saldoContrato!, 18))}
                       className={chip}
                     >
-                      Sacar tudo
+                      {t('painel.sacarTudo')}
                     </button>
                   )}
             </div>
@@ -220,11 +224,11 @@ export function PainelContrato({ conta, contrato: c, aberto, onDesconectar }: Pr
               valor! > 0n && (
                 <div className="rounded-2xl bg-white/70 px-3 py-2 text-xs dark:bg-white/10">
                   <p className="flex justify-between">
-                    <span>Taxa do contrato ({Number(c.taxaBps) / 100}%)</span>
+                    <span>{t('painel.taxa', { pct: Number(c.taxaBps) / 100 })}</span>
                     <span>{formatarEth(taxa, 8)} ETH</span>
                   </p>
                   <p className="flex justify-between font-semibold">
-                    <span>Vai para seu saldo</span>
+                    <span>{t('painel.vaiParaSaldo')}</span>
                     <span>{formatarEth(liquido, 8)} ETH</span>
                   </p>
                 </div>
@@ -237,8 +241,8 @@ export function PainelContrato({ conta, contrato: c, aberto, onDesconectar }: Pr
               className="mt-1 rounded-full bg-linear-to-r from-pink-400 via-fuchsia-400 to-violet-400 py-2.5 font-bold text-white shadow-lg shadow-pink-300/50 transition hover:-translate-y-0.5 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 dark:shadow-violet-900/50"
             >
               {ocupado
-                ? 'Aguarde...'
-                : `${operacao === 'depositar' ? 'Depositar' : 'Sacar'}${valor && !problema ? ` ${formatarEth(valor, 8)} ETH` : ''}`}
+                ? t('painel.aguarde')
+                : `${operacao === 'depositar' ? t('painel.depositar') : t('painel.sacar')}${valor && !problema ? ` ${formatarEth(valor, 8)} ETH` : ''}`}
             </button>
           </form>
 
@@ -257,7 +261,7 @@ export function PainelContrato({ conta, contrato: c, aberto, onDesconectar }: Pr
           onClick={onDesconectar}
           className="rounded-full px-2 py-1 opacity-70 transition hover:bg-pink-100 hover:opacity-100 dark:hover:bg-white/10"
         >
-          Desconectar
+          {t('carteira.desconectar')}
         </button>
       </div>
     </div>

@@ -1,6 +1,7 @@
 // Lógica da carteira (MetaMask e outras compatíveis), usando web3.js
 import { useEffect, useState } from 'react'
 import type { types, Web3 } from 'web3'
+import i18n from '../i18n'
 
 type Provedor = types.MetaMaskProvider<types.Web3EthExecutionAPI>
 
@@ -14,7 +15,7 @@ declare global {
 let web3Promessa: Promise<Web3> | null = null
 export function obterWeb3(): Promise<Web3> {
   const eth = window.ethereum
-  if (!eth) return Promise.reject(new Error('Nenhuma carteira encontrada'))
+  if (!eth) return Promise.reject(new Error(i18n.t('erros.semCarteira')))
   web3Promessa ??= import('web3').then(({ Web3 }) => new Web3(eth))
   return web3Promessa
 }
@@ -22,7 +23,7 @@ export function obterWeb3(): Promise<Web3> {
 // Chamada "crua" à carteira, para métodos que o web3.js não tipa (trocar de rede etc.)
 export function pedirCarteira(method: string, params?: unknown[]) {
   const eth = window.ethereum
-  if (!eth) return Promise.reject(new Error('Nenhuma carteira encontrada'))
+  if (!eth) return Promise.reject(new Error(i18n.t('erros.semCarteira')))
   const request = eth.request as (args: { method: string; params?: unknown[] }) => Promise<unknown>
   return request.call(eth, { method, params })
 }
@@ -36,18 +37,19 @@ function textoDoErro(e: unknown): string {
   }
 }
 
+// Erros do contrato: seletor (4 primeiros bytes do keccak256 do nome) -> chave da tradução
 const ERROS_DO_CONTRATO: [string, string][] = [
-  ['0xf4d678b8', 'Saldo insuficiente no contrato. Deposite mais pela carteira.'], // InsufficientBalance
-  ['0x1f2a2005', 'O valor precisa ser maior que zero'], // ZeroAmount
-  ['0x0a6fc7ca', 'Essa aposta não está mais aberta'], // BetNotOpen
-  ['0xa0f7462e', 'Essa aposta não está esperando a moeda'], // BetNotJoined
-  ['0xa6e9b6d7', 'Só quem criou a aposta pode cancelar'], // NotBetCreator
-  ['0x8c78585b', 'Você não pode entrar na sua própria aposta'], // CannotJoinOwnBet
-  ['0x085de625', 'Ainda cedo: espere o próximo bloco para jogar a moeda'], // TooEarly
-  ['0x9b0beeda', 'Só quem venceu pode devolver'], // NotBetWinner
-  ['0xb5820ebf', 'A aposta ainda não foi resolvida'], // BetNotResolved
-  ['0xd0bfcb60', 'Não dá para devolver mais do que o perdedor apostou'], // ReturnTooHigh
-  ['0x90b8ec18', 'A transferência falhou'], // TransferFailed
+  ['0xf4d678b8', 'InsufficientBalance'],
+  ['0x1f2a2005', 'ZeroAmount'],
+  ['0x0a6fc7ca', 'BetNotOpen'],
+  ['0xa0f7462e', 'BetNotJoined'],
+  ['0xa6e9b6d7', 'NotBetCreator'],
+  ['0x8c78585b', 'CannotJoinOwnBet'],
+  ['0x085de625', 'TooEarly'],
+  ['0x9b0beeda', 'NotBetWinner'],
+  ['0xb5820ebf', 'BetNotResolved'],
+  ['0xd0bfcb60', 'ReturnTooHigh'],
+  ['0x90b8ec18', 'TransferFailed'],
 ]
 
 export function mensagemDeErro(e: unknown): string {
@@ -59,14 +61,15 @@ export function mensagemDeErro(e: unknown): string {
     t.includes('user denied') ||
     t.includes('user rejected')
   )
-    return 'Cancelado na carteira'
+    return i18n.t('erros.cancelado')
   if (codigo === -32002 || t.includes('-32002'))
-    return 'Já tem um pedido aberto na carteira, dá uma olhada lá'
+    return i18n.t('erros.pedidoAberto')
   if (t.includes('insufficient funds'))
-    return 'Saldo insuficiente para o valor + taxa da rede (gás)'
+    return i18n.t('erros.semGas')
   // Erros do próprio contrato (seletor = primeiros 4 bytes do keccak256 do nome)
-  for (const [seletor, msg] of ERROS_DO_CONTRATO) if (t.includes(seletor)) return msg
-  return 'Algo deu errado. Tente de novo.'
+  for (const [seletor, nome] of ERROS_DO_CONTRATO)
+    if (t.includes(seletor)) return i18n.t(`erros.contrato.${nome}`)
+  return i18n.t('erros.generico')
 }
 
 // 0x1234abcd...ef56 -> 0x1234…ef56

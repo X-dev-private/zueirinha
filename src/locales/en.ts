@@ -1,0 +1,161 @@
+import type { Traducao } from './pt'
+
+// English
+const en: Traducao = {
+  titulo: 'Heads or Tails',
+  subtitulo: 'Let luck decide, no arguing ✨',
+  lado: { cara: 'Heads', coroa: 'Tails' },
+  voce: 'You',
+
+  modo: {
+    rotulo: 'Game mode',
+    local: '🎲 With friends',
+    cripto: '💎 Play for ETH',
+  },
+
+  jogadores: {
+    quemCara: '🙂 Who is Heads',
+    quemCoroa: '👑 Who is Tails',
+    nome: 'Name',
+    aposta: '🎁 What’s at stake (optional)',
+    apostaExemplo: 'E.g.: who pays for snacks',
+  },
+  multiplicador: { rotulo: 'Number of flips' },
+  jogar: {
+    botao: 'Flip the coin 🪙',
+    girando: 'Flipping...',
+    preencha: 'Fill in both names to play',
+  },
+  placar: { titulo: 'Score', zerar: '↺ Reset score' },
+  historico: { titulo: 'Recent flips', fechar: 'Close', empate: '🤝 Tie' },
+
+  resultado: {
+    jogando: 'Flipping the coin...',
+    jogandoVezes: 'Flipping the coin {{count}} times...',
+    blockchain: 'Flipping the coin on the blockchain... ⛓️',
+    pronto: 'All set! Click "Flip the coin".',
+    comecar: 'Enter who is Heads and who is Tails to start.',
+    vazioCripto: 'Create a bet or join an open one. When the coin is flipped, it spins here! 🪙',
+    empate: 'It’s a tie! 🤝',
+    venceu: '{{nome}} wins! 🎉',
+    caiuEm: 'The coin landed on <b>{{lado}}</b>.',
+    ninguemLeva: 'Nobody gets <b>{{aposta}}</b>. Flip again to break the tie!',
+    leva: '<b>{{nome}}</b> gets <b>{{aposta}}</b>!',
+    emJogadas: 'In <b>{{count}}</b> flips, the coin landed:',
+  },
+
+  carteira: {
+    instalar: 'Install wallet',
+    instalarTitulo: 'Install a wallet (e.g. MetaMask) to connect',
+    instalarUma: 'Install a wallet',
+    conectar: 'Connect wallet',
+    conectando: 'Connecting...',
+    abrirPainel: 'Open wallet panel',
+    desconectar: 'Disconnect',
+  },
+
+  painel: {
+    titulo: '💎 Deposit contract',
+    redeOk: '● Sepolia (test)',
+    redeErrada: '● Wrong network',
+    trocarRede:
+      'This contract lives on the <b>Sepolia</b> network (testnet). Switch your wallet’s network to continue.',
+    trocarBotao: 'Switch to Sepolia',
+    naCarteira: 'In wallet',
+    noContrato: 'In contract',
+    semEth: 'No test ETH? Get some for free from a <link>Sepolia faucet</link>.',
+    abaDepositar: '⬇️ Deposit',
+    abaSacar: '⬆️ Withdraw',
+    valor: 'Amount',
+    sacarTudo: 'Withdraw all',
+    taxa: 'Contract fee ({{pct}}%)',
+    vaiParaSaldo: 'Goes to your balance',
+    aguarde: 'Please wait...',
+    depositar: 'Deposit',
+    sacar: 'Withdraw',
+  },
+
+  validacao: {
+    invalido: 'Invalid amount',
+    maiorQueZero: 'The amount must be greater than zero',
+    maisQueCarteira: 'More than you have in your wallet',
+    maisQueContrato: 'More than you have in the contract',
+  },
+
+  apostas: {
+    intro:
+      'Bet <b>test ETH</b> against another wallet. The coin is flipped by the contract itself, on the blockchain, and nobody can cheat.',
+    redeErrada: 'Bets happen on the <b>Sepolia</b> network (testnet). Switch your wallet’s network.',
+    saldo: 'Balance to bet: <b>{{saldo}}</b>',
+    depositar: '⬇️ Deposit',
+    valorRotulo: 'Bet amount in ETH',
+    valor: 'Amount',
+    seuLado: 'Your side',
+    criar: 'Create bet',
+    criando: 'Creating...',
+    titulo: 'Bets',
+    filtroTodas: 'All',
+    filtroMinhas: 'Mine',
+    nenhumaMinha: 'You don’t have any bets yet.',
+    nenhuma: 'No bets yet. Create the first one! ✨',
+    aguardando: 'waiting…',
+    status: {
+      aberta: 'Open',
+      'em-jogo': 'In play',
+      resolvida: 'Settled',
+      cancelada: 'Cancelled',
+      reembolsada: 'Refunded',
+    },
+    cancelar: 'Cancel',
+    saldoNaoCobre: 'Your contract balance doesn’t cover this bet',
+    depositarParaEntrar: 'Deposit to join',
+    entrarCom: 'Join as {{emoji}}',
+    reembolsar: 'Refund',
+    jogarMoeda: '🪙 Flip the coin',
+    proximoBloco: '⏳ next block…',
+    devolverAbrir: '🤝 Give back to the loser (just for fun)',
+    quantoDevolver: 'How much to give back in ETH',
+    devolver: 'Give back',
+    cancelarDevolucao: 'Cancel give-back',
+    devolvido: '🤝 {{valor}} ETH given back to the loser',
+    premio: '{{valor}} ETH (bet #{{id}})',
+  },
+
+  tx: {
+    assinando: '✍️ Confirm the transaction in your wallet...',
+    confirmando: '⏳ Sent! Waiting for the network to confirm…',
+    verEtherscan: 'view on Etherscan',
+    acoes: {
+      deposito: 'Deposit confirmed',
+      saque: 'Withdrawal confirmed',
+      apostaCriada: 'Bet created',
+      entrouAposta: 'You joined the bet',
+      moedaJogada: 'Coin flipped',
+      apostaCancelada: 'Bet cancelled',
+      valorDevolvido: 'Amount given back',
+    },
+  },
+
+  erros: {
+    semCarteira: 'No wallet found',
+    cancelado: 'Cancelled in the wallet',
+    pedidoAberto: 'There’s already a pending request in your wallet, take a look',
+    semGas: 'Not enough balance for the amount + network fee (gas)',
+    generico: 'Something went wrong. Please try again.',
+    contrato: {
+      InsufficientBalance: 'Not enough balance in the contract. Deposit more from your wallet.',
+      ZeroAmount: 'The amount must be greater than zero',
+      BetNotOpen: 'This bet is no longer open',
+      BetNotJoined: 'This bet isn’t waiting for a flip',
+      NotBetCreator: 'Only the bet creator can cancel it',
+      CannotJoinOwnBet: 'You can’t join your own bet',
+      TooEarly: 'Too early: wait for the next block to flip the coin',
+      NotBetWinner: 'Only the winner can give back',
+      BetNotResolved: 'The bet hasn’t been settled yet',
+      ReturnTooHigh: 'You can’t give back more than the loser bet',
+      TransferFailed: 'The transfer failed',
+    },
+  },
+}
+
+export default en

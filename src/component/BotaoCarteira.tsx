@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { encurtarEndereco, type CarteiraHook } from './carteira'
 import type { ContratoHook } from './contrato'
 import { PainelContrato } from './PainelContrato'
@@ -31,6 +32,7 @@ type Props = {
 }
 
 export function BotaoCarteira({ carteira, contrato, aberto, setAberto }: Props) {
+  const { t } = useTranslation()
   const { conta, conectando, erro, temCarteira, conectar, desconectar } = carteira
   const caixaRef = useRef<HTMLDivElement>(null)
 
@@ -51,13 +53,13 @@ export function BotaoCarteira({ carteira, contrato, aberto, setAberto }: Props) 
           href="https://metamask.io/download/"
           target="_blank"
           rel="noreferrer"
-          title="Instale uma carteira (ex.: MetaMask) para conectar"
+          title={t('carteira.instalarTitulo')}
           className={pilula}
         >
           <span className="text-violet-500 dark:text-violet-300">
             <IconeCarteira />
           </span>
-          <span className="hidden lg:inline">Instalar carteira</span>
+          <span className="hidden lg:inline">{t('carteira.instalar')}</span>
         </a>
       )}
 
@@ -66,7 +68,7 @@ export function BotaoCarteira({ carteira, contrato, aberto, setAberto }: Props) 
           type="button"
           onClick={conectarEAbrir}
           disabled={conectando}
-          aria-label="Conectar carteira"
+          aria-label={t('carteira.conectar')}
           className={`${pilula} disabled:cursor-wait disabled:opacity-70`}
         >
           <span className="text-violet-500 dark:text-violet-300">
@@ -77,7 +79,7 @@ export function BotaoCarteira({ carteira, contrato, aberto, setAberto }: Props) 
             )}
           </span>
           <span className="hidden lg:inline">
-            {conectando ? 'Conectando...' : 'Conectar carteira'}
+            {conectando ? t('carteira.conectando') : t('carteira.conectar')}
           </span>
         </button>
       )}
@@ -88,7 +90,7 @@ export function BotaoCarteira({ carteira, contrato, aberto, setAberto }: Props) 
             type="button"
             onClick={() => setAberto((a) => !a)}
             aria-expanded={aberto}
-            aria-label="Abrir painel da carteira"
+            aria-label={t('carteira.abrirPainel')}
             title={conta}
             className={pilula}
           >

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ApostasCripto } from './component/ApostasCripto'
 import { BotaoCarteira } from './component/BotaoCarteira'
 import { useCarteira } from './component/carteira'
@@ -28,6 +29,7 @@ import {
 type Modo = 'local' | 'cripto'
 
 function App() {
+  const { t } = useTranslation()
   // Modo de jogo: entre amigos (sorteio no navegador) ou valendo ETH (sorteio no contrato)
   const [modo, setModo] = useState<Modo>('local')
 
@@ -166,9 +168,9 @@ function App() {
       <div ref={palcoRef} className="flex min-h-0 scroll-mt-2 flex-col items-center gap-2 sm:gap-3">
         <header className="flex flex-col items-center">
           <h1 className="titulo-fofo text-[2rem] font-bold tracking-tight sm:text-5xl">
-            Cara ou Coroa
+            {t('titulo')}
           </h1>
-          <p className="text-sm opacity-80 sm:text-base">Decidam na sorte, sem brigas ✨</p>
+          <p className="text-sm opacity-80 sm:text-base">{t('subtitulo')}</p>
         </header>
 
         <Moeda
@@ -190,7 +192,7 @@ function App() {
           aguardando={aguardando}
           mensagemVazia={
             modo === 'cripto'
-              ? 'Crie uma aposta ou entre numa aberta. Quando a moeda for jogada, ela gira aqui! 🪙'
+              ? t('resultado.vazioCripto')
               : undefined
           }
         />
@@ -202,13 +204,13 @@ function App() {
           {/* Seletor de modo */}
           <div
             role="tablist"
-            aria-label="Modo de jogo"
+            aria-label={t('modo.rotulo')}
             className="grid w-full grid-cols-2 rounded-full bg-white/70 p-1 dark:bg-white/10"
           >
             {(
               [
-                ['local', '🎲 Entre amigos'],
-                ['cripto', '💎 Valendo ETH'],
+                ['local', t('modo.local')],
+                ['cripto', t('modo.cripto')],
               ] as const
             ).map(([m, texto]) => (
               <button

@@ -9,6 +9,7 @@
 //   returnToLoser(id, valor)          -> vencedor devolve parte/tudo ao perdedor
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Contract, Web3 } from 'web3'
+import i18n from '../i18n'
 import { ABI_FEE_VAULT } from './abiFeeVault'
 import { encurtarEndereco, mensagemDeErro, obterWeb3, pedirCarteira } from './carteira'
 import type { Lado, Rodada } from './jogo'
@@ -297,33 +298,33 @@ export function useContrato(conta: string | null, aoResolverAposta?: (a: Aposta)
 
     // Carteira <-> contrato
     depositar: (valor: bigint) =>
-      enviarTx('carteira', 'Depósito', (c, de) =>
+      enviarTx('carteira', 'deposito', (c, de) =>
         c.methods.deposit().send({ from: de, value: valor.toString() }),
       ),
     sacar: (valor: bigint) =>
-      enviarTx('carteira', 'Saque', (c, de) =>
+      enviarTx('carteira', 'saque', (c, de) =>
         c.methods.withdraw(valor.toString()).send({ from: de }),
       ),
 
     // Apostas
     criarAposta: (valor: bigint, lado: Lado) =>
-      enviarTx('apostas', 'Aposta criada', (c, de) =>
+      enviarTx('apostas', 'apostaCriada', (c, de) =>
         c.methods.createBet(valor.toString(), lado === 'cara' ? '0' : '1').send({ from: de }),
       ),
     entrarAposta: (n: number) =>
-      enviarTx('apostas', 'Você entrou na aposta', (c, de) =>
+      enviarTx('apostas', 'entrouAposta', (c, de) =>
         c.methods.joinBet(id(n)).send({ from: de }),
       ),
     resolverAposta: (n: number) =>
-      enviarTx('apostas', 'Moeda jogada', (c, de) =>
+      enviarTx('apostas', 'moedaJogada', (c, de) =>
         c.methods.resolveBet(id(n)).send({ from: de }),
       ),
     cancelarAposta: (n: number) =>
-      enviarTx('apostas', 'Aposta cancelada', (c, de) =>
+      enviarTx('apostas', 'apostaCancelada', (c, de) =>
         c.methods.cancelBet(id(n)).send({ from: de }),
       ),
     devolverAoPerdedor: (n: number, valor: bigint) =>
-      enviarTx('apostas', 'Valor devolvido', (c, de) =>
+      enviarTx('apostas', 'valorDevolvido', (c, de) =>
         c.methods.returnToLoser(id(n), valor.toString()).send({ from: de }),
       ),
   }
@@ -334,7 +335,7 @@ export type ContratoHook = ReturnType<typeof useContrato>
 // ---------- Integração com o jogo ----------
 function rotulo(endereco: string | null, conta: string | null) {
   if (!endereco) return '?'
-  return mesmoEndereco(endereco, conta) ? 'Você' : encurtarEndereco(endereco)
+  return mesmoEndereco(endereco, conta) ? i18n.t('voce') : encurtarEndereco(endereco)
 }
 
 // Transforma uma aposta resolvida numa rodada do jogo (moeda, resultado, placar e histórico)
@@ -350,6 +351,6 @@ export function rodadaDaAposta(a: Aposta, conta: string | null): Rodada | null {
     ultimo: lado,
     nomeCara: rotulo(donoCara, conta),
     nomeCoroa: rotulo(donoCoroa, conta),
-    aposta: `${formatarEth(a.valor * 2n)} ETH (aposta #${a.id})`,
+    aposta: i18n.t('apostas.premio', { valor: formatarEth(a.valor * 2n), id: a.id }),
   }
 }

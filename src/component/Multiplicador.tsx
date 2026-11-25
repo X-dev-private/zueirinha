@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { MAX_MULTIPLICADOR } from './jogo'
 
 const ATALHOS = [1, 10, 100, 1000]
@@ -9,10 +10,11 @@ type Props = {
 }
 
 export function Multiplicador({ valor, desabilitado, onChange }: Props) {
+  const { t } = useTranslation()
   return (
     <div className="flex w-full flex-col items-center gap-1.5">
       <label className="text-sm font-semibold text-[var(--texto-forte)]" htmlFor="multiplicador">
-        Multiplicador de partidas
+        {t('multiplicador.rotulo')}
       </label>
 
       <div className="flex flex-wrap items-center justify-center gap-2">
